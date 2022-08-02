@@ -96,8 +96,7 @@ const CustomEditor = (props) => {
     });
     async function contents() {
       const output = await editor.save();
-      const content = JSON.stringify(output.blocks);
-      setContent(content);
+      setContent(JSON.stringify({ blocks: output.blocks }));
     }
   };
 

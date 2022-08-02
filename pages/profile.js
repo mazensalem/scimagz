@@ -20,9 +20,7 @@ async function send(content, sector) {
 }
 
 export default function Profile({ user }) {
-  const [content, setContent] = useState(
-    user.bio ? `{"blocks": ${user.bio}}` : "{}"
-  );
+  const [content, setContent] = useState(user.bio || "{}");
   const [editbiostate, seteditbiostate] = useState(false);
   const [userrole, setuserrole] = useState(user.role || "Student");
 
@@ -83,7 +81,7 @@ export default function Profile({ user }) {
           {user.bio && (
             <button
               onClick={() => {
-                setContent(`{"blocks": ${user.bio}}`);
+                setContent(user.bio);
                 seteditbiostate(!editbiostate);
               }}
             >
@@ -109,7 +107,7 @@ export default function Profile({ user }) {
           </div>
 
           <div style={{ display: (!user.bio || editbiostate) && "none" }}>
-            {JSON.parse(user.bio || "[]").map((value) => {
+            {JSON.parse(user.bio || "{blocks: []}").blocks.map((value) => {
               if (value.type === "paragraph") {
                 return <p>{value.data.text}</p>;
               }
