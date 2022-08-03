@@ -20,17 +20,31 @@ export default async (req, res) => {
       }
     } else if (req.body.sector === "role") {
       try {
-        const r = await usercol.replaceOne(
-          { email: session.user.email },
-          {
-            ...user,
-            role: req.body.content,
-            status:
-              req.body.content == "Student"
-                ? "Approved"
-                : "Pending Confirmation",
-          }
-        );
+        if (req.body.content == "Student") {
+          const r = await usercol.replaceOne(
+            { email: session.user.email },
+            {
+              ...user,
+              role: req.body.content,
+              status: "Approved",
+            }
+          );
+        } else {
+          const rapprovedby = await usercol.aggregate([
+            { $match: { role: "Instructor", status: "Approved" } },
+            { $sample: { size: 1 } },
+          ]);
+          const approvedby = await rapprovedby.toArray();
+          const r = await usercol.replaceOne(
+            { email: session.user.email },
+            {
+              ...user,
+              role: req.body.content,
+              status: "Pending Confirmation",
+              approvedby: approvedby[0].email,
+            }
+          );
+        }
         res.status(200).json({ content: "Done" });
       } catch (error) {
         res.json({ error });

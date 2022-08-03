@@ -10,7 +10,13 @@ export default async (req, res) => {
   if (session) {
     const cl = await client;
     const db = await cl.db();
+    const usercol = await db.collection("users");
     const postcol = await db.collection("posts");
+    const rapprovedby = await usercol.aggregate([
+      { $match: { role: "Instructor", status: "Approved" } },
+      { $sample: { size: 1 } },
+    ]);
+    const approvedby = await rapprovedby.toArray();
     if (JSON.parse(req.body).sector == "Image") {
       if (JSON.parse(req.body).postid == null) {
         const r = await postcol.insertOne({
@@ -20,6 +26,7 @@ export default async (req, res) => {
           },
           status: "Pending confirmation",
           user_email: session.user.email,
+          approvedby: approvedby[0].email,
         });
       } else {
         const post = await postcol.findOne({
@@ -38,6 +45,7 @@ export default async (req, res) => {
               url: JSON.parse(req.body).url,
               public_id: JSON.parse(req.body).public_id,
             },
+            status: "Pending confirmation",
           }
         );
       }
@@ -48,6 +56,7 @@ export default async (req, res) => {
           name: JSON.parse(req.body).name,
           status: "Pending confirmation",
           user_email: session.user.email,
+          approvedby: approvedby[0].email,
         });
         res.json({ content: r.insertedId.toString() });
       } else {
@@ -60,6 +69,7 @@ export default async (req, res) => {
             ...post,
             text: JSON.parse(req.body).text,
             name: JSON.parse(req.body).name,
+            status: "Pending confirmation",
           }
         );
       }
