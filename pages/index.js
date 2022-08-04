@@ -8,7 +8,7 @@ export default function Home({ posts }) {
         {posts ? (
           posts.map((post) => (
             <>
-              <Post post={post} sector="posts" />
+              <Post key={post._id} post={post} sector="posts" />
             </>
           ))
         ) : (

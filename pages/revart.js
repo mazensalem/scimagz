@@ -21,6 +21,7 @@ export default function revart({ id, sector }) {
       <a
         style={{ fontSize: "30px" }}
         target="_blank"
+        rel="noreferrer"
         href={`/${sector == "post" ? "art" : "user"}/${id}`}
       >
         see the {sector == "post" ? "post" : "profile"}

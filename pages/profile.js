@@ -161,7 +161,7 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
           <h1>Posts</h1>
           <div>
             {posts.map((post) => (
-              <div>
+              <div key={post._id}>
                 <a href={"/sendart?id=" + post._id}>{post.name}</a>
                 <button
                   onClick={() =>
@@ -178,7 +178,7 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
           <h1>courses</h1>
           <div>
             {courses.map((course) => (
-              <div>
+              <div key={course._id}>
                 <a href={"/sendcours?id=" + course._id}>{course.name}</a>
                 <button
                   onClick={() =>
@@ -199,7 +199,7 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
           <div>
             <h1>Users to review</h1>
             {penddingapproval.users.map((user) => (
-              <div>
+              <div key={user._id}>
                 <a href={"/revart?sector=user&id=" + user._id}>{user.name}</a>{" "}
                 {user.status}
               </div>
@@ -208,7 +208,7 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
           <div>
             <h1>posts to review</h1>
             {penddingapproval.posts.map((post) => (
-              <div>
+              <div key={post._id}>
                 <a href={"/revart?sector=post&id=" + post._id}>{post.name}</a>{" "}
                 {post.status}
               </div>

@@ -6,7 +6,9 @@ export default function Home({ courses }) {
     <div>
       <div>
         {courses ? (
-          courses.map((course) => <Post post={course} sector="courses" />)
+          courses.map((course) => (
+            <Post key={course.id} post={course} sector="courses" />
+          ))
         ) : (
           <>no courses is here yet</>
         )}
