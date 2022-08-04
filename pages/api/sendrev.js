@@ -20,6 +20,9 @@ export default async (req, res) => {
             status: JSON.parse(req.body).content,
           }
         );
+        res.json({ content: "Done" });
+      } else {
+        res.json({ error: "not allowed" });
       }
     } else if (JSON.parse(req.body).sector == "post") {
       const col = await db.collection("posts");
@@ -34,6 +37,9 @@ export default async (req, res) => {
             status: JSON.parse(req.body).content,
           }
         );
+        res.json({ content: "Done" });
+      } else {
+        res.json({ error: "not allowed" });
       }
     }
   }

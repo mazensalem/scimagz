@@ -5,6 +5,7 @@ import LinkTool from "@editorjs/link";
 import Checklist from "@editorjs/checklist";
 import List from "@editorjs/list";
 import Quote from "@editorjs/quote";
+import Embed from "@editorjs/embed";
 import { StyleInlineTool } from "editorjs-style";
 import Tooltip from "editorjs-tooltip";
 import _ from "lodash/debounce";
@@ -92,6 +93,7 @@ const CustomEditor = (props) => {
             captionPlaceholder: "Quote's author",
           },
         },
+        embed: { class: Embed, inlineToolbar: true },
       },
     });
     async function contents() {

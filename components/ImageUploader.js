@@ -31,7 +31,7 @@ export function ImageUpload({ setContent, content, postid }) {
             }),
           }).then((x) => x.json());
           if (r.content == "Done") {
-            console.log("Done");
+            alert("Success");
           }
         } else if (error) {
           console.log(error);
@@ -48,7 +48,7 @@ export function ImageUpload({ setContent, content, postid }) {
         <button type="button" onClick={handleWidgetClick}>
           Upload file
         </button>
-        <object data={content.url} type="application/pdf" />
+        {content ? <object data={content.url} type="application/pdf" /> : null}
       </div>
     </div>
   );

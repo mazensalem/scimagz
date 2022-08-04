@@ -24,10 +24,10 @@ export default async (req, res) => {
             url: JSON.parse(req.body).url,
             public_id: JSON.parse(req.body).public_id,
           },
-          status: "Pending confirmation",
+          status: "draft",
           user_email: session.user.email,
-          approvedby: approvedby[0].email,
         });
+        res.json({ content: r.insertedId.toString() });
       } else {
         const post = await postcol.findOne({
           _id: ObjectId(JSON.parse(req.body).postid),
@@ -45,7 +45,7 @@ export default async (req, res) => {
               url: JSON.parse(req.body).url,
               public_id: JSON.parse(req.body).public_id,
             },
-            status: "Pending confirmation",
+            status: post.status == "draft" ? "draft" : "Pending confirmation",
           }
         );
       }
@@ -54,9 +54,8 @@ export default async (req, res) => {
         const r = await postcol.insertOne({
           text: JSON.parse(req.body).text,
           name: JSON.parse(req.body).name,
-          status: "Pending confirmation",
+          status: "draft",
           user_email: session.user.email,
-          approvedby: approvedby[0].email,
         });
         res.json({ content: r.insertedId.toString() });
       } else {
@@ -69,7 +68,21 @@ export default async (req, res) => {
             ...post,
             text: JSON.parse(req.body).text,
             name: JSON.parse(req.body).name,
-            status: "Pending confirmation",
+            status: post.status == "draft" ? "draft" : "Pending confirmation",
+          }
+        );
+      }
+    } else if (JSON.parse(req.body).sector == "submit") {
+      const post = await postcol.findOne({
+        _id: ObjectId(JSON.parse(req.body).postid),
+      });
+      if (post.user_email == session.user.email) {
+        await postcol.replaceOne(
+          { _id: ObjectId(JSON.parse(req.body).postid) },
+          {
+            ...post,
+            status: post.status == "draft" ? "Pending confirmation" : "draft",
+            approvedby: post.status == "draft" ? approvedby[0].email : null,
           }
         );
       }

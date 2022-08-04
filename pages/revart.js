@@ -2,34 +2,49 @@ import { ObjectId } from "mongodb";
 import { getSession } from "next-auth/react";
 import client from "../lib/mongodbconn";
 import Route from "next/router";
+import { Button } from "@mui/material";
 
 async function sendrev(id, sector, content) {
   const cont = await fetch("/api/sendrev", {
     method: "POST",
     body: JSON.stringify({ id, sector, content }),
   }).then((x) => x.json());
-  return cont;
+  if (cont.content != "Done") {
+    alert("Some things went wrong");
+  }
+  return cont.content;
 }
 
 export default function revart({ id, sector }) {
   return (
-    <div>
-      <button
+    <div style={{ textAlign: "center" }}>
+      <a
+        style={{ fontSize: "30px" }}
+        target="_blank"
+        href={`/${sector == "post" ? "art" : "user"}/${id}`}
+      >
+        see the {sector == "post" ? "post" : "profile"}
+      </a>
+      <br />
+      <Button
+        variant="contained"
         onClick={() => {
           sendrev(id, sector, "Approved");
           Route.push("/");
         }}
       >
         Approved
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="contained"
+        color="error"
         onClick={() => {
           sendrev(id, sector, "denied");
           Route.push("/");
         }}
       >
         denied
-      </button>
+      </Button>
     </div>
   );
 }

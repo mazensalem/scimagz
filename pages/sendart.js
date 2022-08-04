@@ -4,24 +4,34 @@ import dynamic from "next/dynamic";
 import client from "../lib/mongodbconn";
 import { ObjectId } from "mongodb";
 import { getSession } from "next-auth/react";
+import Router from "next/router";
 
 const CustomEditor = dynamic(() => import("../components/richtext"), {
   ssr: false,
 });
 
-async function sendart(postid, text, name) {
-  const r = await fetch("/api/sendpost", {
-    method: "POST",
-    body: JSON.stringify({ postid, text, name, sector: "text" }),
-  }).then((x) => x.json());
-  return r.content;
+async function sendart(postid, text, name, sector) {
+  if (sector == "text") {
+    const r = await fetch("/api/sendpost", {
+      method: "POST",
+      body: JSON.stringify({ postid, text, name, sector: "text" }),
+    }).then((x) => x.json());
+    return r.content;
+  } else if (sector == "submit") {
+    const r = await fetch("/api/sendpost", {
+      method: "POST",
+      body: JSON.stringify({ postid, sector: "submit" }),
+    }).then((x) => x.json());
+    return r.content;
+  }
 }
 
-export default function Sendart({ rpostid, rtext, rfile, rpostname }) {
+export default function Sendart({ rpostid, rtext, rfile, rpostname, rstatus }) {
   const [text, settext] = useState(rtext);
   const [file, setfile] = useState(rfile);
   const [postname, setpostname] = useState(rpostname);
   const [postid, setpostid] = useState(rpostid);
+  const [status, setstatus] = useState(rstatus);
   return (
     <div>
       <input
@@ -29,25 +39,28 @@ export default function Sendart({ rpostid, rtext, rfile, rpostname }) {
         value={postname}
         onChange={(e) => setpostname(e.target.value)}
       />
-      <ImageUpload postid={postid} setContent={setfile} content={file} />
       <CustomEditor setContent={settext} content={text} />
       <button
         onClick={async () => {
-          const post = await sendart(postid, text, postname);
+          const post = await sendart(postid, text, postname, "text");
           if (postid == null) {
             setpostid(post);
           }
+          alert("Success");
         }}
       >
         sendtext
       </button>
+
+      <ImageUpload postid={postid} setContent={setfile} content={file} />
       <button
         onClick={async () => {
-          const result = await sendart(file, text);
-          console.log(result);
+          await sendart(postid, "", "", "submit");
+          setstatus(status == "draft" ? "Pending confirmation" : "draft");
+          Router.push("/");
         }}
       >
-        send
+        {status == "draft" || status == null ? "send" : "unsend"}
       </button>
     </div>
   );
@@ -66,8 +79,9 @@ export async function getServerSideProps(context) {
         props: {
           rpostid: context.query.id,
           rtext: r.text,
-          rfile: r.file,
+          rfile: r.file || null,
           rpostname: r.name,
+          rstatus: r.status,
         },
       };
     } else {
@@ -83,6 +97,7 @@ export async function getServerSideProps(context) {
         rtext: '{"blocks": []}',
         rfile: {},
         rpostname: "",
+        rstatus: null,
       },
     };
   }

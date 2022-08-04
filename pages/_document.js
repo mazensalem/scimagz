@@ -9,6 +9,8 @@ export default function Document() {
           src="https://widget.cloudinary.com/v2.0/global/all.js"
           type="text/javascript"
         ></script>
+        <link rel="icon" href="/logo.jpg" />
+        <title>SMZ</title>
       </Head>
       <body>
         <Main />
