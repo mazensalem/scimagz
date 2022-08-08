@@ -79,6 +79,7 @@ export async function getServerSideProps(context) {
         user.approvedby === session.user.email &&
         user.status == "Pending confirmation"
       ) {
+        console.log({id, sector, ...user})
         return { props: { id, sector } };
       } else {
         context.res.writeHead(302, {
