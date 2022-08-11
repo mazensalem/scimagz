@@ -63,7 +63,7 @@ export async function getServerSideProps(context) {
       const post = await pcol.findOne({ _id: ObjectId(id) });
       if (
         post.approvedby === session.user.email &&
-        post.status == "Pending confirmation"
+        post.status == "Pending Confirmation"
       ) {
         return { props: { id, sector } };
       } else {
@@ -71,13 +71,14 @@ export async function getServerSideProps(context) {
           Location: "/",
           "Cache-Control": "max-age=0",
         });
+        return { props: {} };
       }
     } else if (sector == "user") {
       const ucol = await db.collection("users");
       const user = await ucol.findOne({ _id: ObjectId(id) });
       if (
         user.approvedby === session.user.email &&
-        user.status == "Pending confirmation"
+        user.status == "Pending Confirmation"
       ) {
         return { props: { id, sector } };
       } else {
@@ -85,17 +86,20 @@ export async function getServerSideProps(context) {
           Location: "/",
           "Cache-Control": "max-age=0",
         });
+        return { props: {} };
       }
     } else {
       context.res.writeHead(302, {
         Location: "/",
         "Cache-Control": "max-age=0",
       });
+      return { props: {} };
     }
   } else {
     context.res.writeHead(302, {
       Location: "/",
       "Cache-Control": "max-age=0",
     });
+    return { props: {} };
   }
 }
