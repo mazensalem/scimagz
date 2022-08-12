@@ -1,15 +1,12 @@
-import { random } from "lodash";
-
 export default function Textreader({ content }) {
   return (
     <div>
-      {" "}
       {content.blocks.map((value) => {
         const d = new Date();
         const n = d.getTime();
         if (value.type === "paragraph") {
           return <p key={n}>{value.data.text}</p>;
-        } else if (value.type == "header") {
+        } else if (value.type === "header") {
           if (value.data.level == 1) {
             return <h1 key={n}>{value.data.text}</h1>;
           } else if (value.data.level == 2) {
@@ -23,8 +20,7 @@ export default function Textreader({ content }) {
           } else if (value.data.level == 6) {
             return <h6 key={n}>{value.data.text}</h6>;
           }
-        } else if (value.type == "checklist") {
-          //   console.log();
+        } else if (value.type === "checklist") {
           return (
             <>
               {value.data.items.map((item) => (
@@ -35,7 +31,7 @@ export default function Textreader({ content }) {
               ))}
             </>
           );
-        } else if (value.type == "list") {
+        } else if (value.type === "list") {
           return (
             <>
               {value.data.style == "unordered" ? (
@@ -53,9 +49,9 @@ export default function Textreader({ content }) {
               )}
             </>
           );
-        } else if (value.type == "quote") {
+        } else if (value.type === "quote") {
           return <quote key={n}>{value.data.text} </quote>;
-        } else if (value.type == "embed") {
+        } else if (value.type === "embed") {
           return (
             <iframe
               key={n}

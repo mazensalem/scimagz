@@ -39,7 +39,8 @@ export default function Sendart({ rpostid, rtext, rfile, rpostname, rstatus }) {
         value={postname}
         onChange={(e) => setpostname(e.target.value)}
       />
-      <CustomEditor setContent={settext} content={text} />
+      <CustomEditor container="postbody" setContent={settext} content={text} />
+      <div id="postbody"></div>
       <button
         onClick={async () => {
           const post = await sendart(postid, text, postname, "text");

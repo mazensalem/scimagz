@@ -10,12 +10,13 @@ import { StyleInlineTool } from "editorjs-style";
 import Tooltip from "editorjs-tooltip";
 import _ from "lodash/debounce";
 
-const EDITTOR_HOLDER_ID = "editorjs";
+// const EDITTOR_HOLDER_ID = "editorjs";
 
 const firstrender = true;
 
 const CustomEditor = (props) => {
-  const { setContent, content } = props;
+  const { setContent, content, readonly, container } = props;
+  const EDITTOR_HOLDER_ID = container;
 
   const isInstance = useRef();
 
@@ -23,7 +24,7 @@ const CustomEditor = (props) => {
     if (!isInstance.current) {
       if (firstrender) {
         initEditor();
-        firstrender = false;
+        firstrender = true;
       }
     }
     return () => {
@@ -35,11 +36,11 @@ const CustomEditor = (props) => {
       }
     };
   }, []);
-
   const initEditor = () => {
     const editor = new EditorJS({
       holder: EDITTOR_HOLDER_ID,
       data: JSON.parse(content),
+      readOnly: readonly,
       onReady: () => {
         isInstance.current = editor;
       },
@@ -98,15 +99,12 @@ const CustomEditor = (props) => {
     });
     async function contents() {
       const output = await editor.save();
+      console.log(output);
       setContent(JSON.stringify({ blocks: output.blocks }));
     }
   };
 
-  return (
-    <>
-      <div id={EDITTOR_HOLDER_ID}> </div>
-    </>
-  );
+  return <>{/* <div id={EDITTOR_HOLDER_ID}> </div> */}</>;
 };
 
 export default CustomEditor;

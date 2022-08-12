@@ -51,6 +51,7 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
 
   return (
     <>
+      {/* sidebar right */}
       <div name="sidebar" style={{ width: "25%", marginTop: "10px" }}>
         <div
           style={{
@@ -63,7 +64,7 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
           <img
             alt="users image"
             src={user.image}
-            referrerpolicy="no-referrer"
+            referrerPolicy="no-referrer"
           />
           <div>
             <strong>{user.name}</strong>
@@ -77,17 +78,22 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
               <div>
                 <select onChange={(e) => setuserrole(e.target.value)}>
                   <option>Student</option>
-                  <option>Instructor</option>
+                  <option value="hinstructor">Instructor</option>
+                  <option value="Instructor">
+                    Instructor (will review other posts)
+                  </option>
                 </select>
                 <button
                   onClick={async () => {
                     const r = confirm(
-                      "Are you sure you want to be a " + userrole
+                      "Are you sure you want to be a " +
+                        (userrole == "Student" ? "Student" : "Instructor")
                     );
                     if (r) {
                       const result = await send(userrole, "role");
                       if (result == "Done") {
                         user.role = userrole;
+                        user.status = "Pending Confirmation";
                         setuserrole(null);
                       } else {
                         alert("Error");
@@ -103,7 +109,9 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
         </div>
       </div>
 
+      {/* sidebar left */}
       <div style={{ width: "75%", float: "right" }}>
+        {/* The container of the bio system */}
         <div
           style={{
             padding: 10,
@@ -116,6 +124,7 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
         >
           <span>Tell Us about you</span>
           <div>
+            {/* The Edit button */}
             {user.bio && (
               <button
                 onClick={() => {
@@ -127,10 +136,34 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
               </button>
             )}
 
+            {/* view of the bio */}
+            <div>
+              {content == "{}" || editbiostate ? null : (
+                <>
+                  <CustomEditor
+                    setContent={setContent}
+                    content={content}
+                    readonly={true}
+                    container="bioviewer"
+                  />
+                  <div id="bioviewer"></div>
+                </>
+              )}
+            </div>
+
+            {/* The editor of the bio */}
             <div
-              style={{ display: content != "{}" && !editbiostate && "none" }}
+              style={{
+                display: content != "{}" && !editbiostate ? "none" : "block",
+              }}
             >
-              <CustomEditor setContent={setContent} content={content} />
+              <CustomEditor
+                setContent={setContent}
+                content={content}
+                readonly={false}
+                container="bioeditor"
+              />
+              <div id="bioeditor"></div>
               <button
                 onClick={async () => {
                   const result = await send(content, "bio");
@@ -144,16 +177,6 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
               >
                 save my bio
               </button>
-            </div>
-
-            <div
-              style={{ display: (content == "{}" || editbiostate) && "none" }}
-            >
-              <Textreader
-                content={JSON.parse(
-                  content == "{}" ? '{"blocks": []}' : content
-                )}
-              />
             </div>
           </div>
         </div>
@@ -174,6 +197,7 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
             ))}
           </div>
         </div>
+
         <div>
           <h1>courses</h1>
           <div>
@@ -260,133 +284,19 @@ export async function getServerSideProps(context) {
       courses[i]._id = courses[i]._id.toString();
     }
   }
-  console.log(posts);
-  console.log(courses);
-  console.log(penddingapproval);
   return {
     props: { user: user || {}, posts, penddingapproval, courses },
   };
 }
 
 // {
-//   users: [
-//     {
-//       _id: '62ea1a1560a2ca1fbd7737bc',
-//       name: 'May Salim',
-//       email: 'maysalimf@gmail.com',
-//       image: 'https://lh3.googleusercontent.com/a/AItbvmlvQJUbLiXfMb2EFtKiEWFTY4QNn3IJcCf0Isc=s96-c',
-//       emailVerified: null,
-//       role: 'Instructor',
-//       status: 'Approved',
-//       approvedby: 'salemmazen27@gmail.com',
-//       bio: '{"blocks":[{"id":"6jsBJIzluB","type":"paragraph","data":{"text":"this is my bio 6"}}]}'
-//     }
-//   ],
-//   posts: [
-//     {
-//       _id: '62ea27d460a2ca1fbd7737be',
-//       text: '{"blocks":[{"id":"o_5vwQ05K0","type":"paragraph","data":{"text":"B1"}}]}',
-//       name: 'H1',
-//       status: 'Approved',
-//       user_email: 'maysalimf@gmail.com',
-//       approvedby: 'salemmazen27@gmail.com',
-//       file: [Object]
-//     },
-//     {
-//       _id: '62eac9a460a2ca1fbd7737c8',
-//       text: '{"blocks":[{"id":"nHRcmjph-J","type":"paragraph","data":{"text":"lets go"}}]}',
-//       name: 'hallo',
-//       status: 'Approved',
-//       user_email: 'salemmazen27@gmail.com',
-//       approvedby: 'salemmazen27@gmail.com',
-//       file: [Object]
-//     },
-//     {
-//       _id: '62eb7f8fc59192bc2b43b8e1',
-//       text: '{"blocks":[{"id":"39tETbV2ax","type":"paragraph","data":{"text":"b1"}}]}',
-//       name: 'h1',
-//       status: 'Pending confirmation',
-//       user_email: 'salemmazen27@gmail.com',
-//       file: [Object],
-//       approvedby: 'salemmazen27@gmail.com'
-//     }
-//   ]
-// }
-// [
-//   {
-//     _id: '62eac9a460a2ca1fbd7737c8',
-//     text: '{"blocks":[{"id":"nHRcmjph-J","type":"paragraph","data":{"text":"lets go"}}]}',
-//     name: 'hallo',
-//     status: 'Approved',
-//     user_email: 'salemmazen27@gmail.com',
-//     approvedby: 'salemmazen27@gmail.com',
-//     file: {
-//       url: 'https://res.cloudinary.com/dc1fhdtwe/raw/upload/v1659554224/scimagz/s7xdbue400ei5o4otxfz.pdf',
-//       public_id: 'scimagz/s7xdbue400ei5o4otxfz.pdf'
-//     }
-//   },
-//   {
-//     _id: '62eb7f8fc59192bc2b43b8e1',
-//     text: '{"blocks":[{"id":"39tETbV2ax","type":"paragraph","data":{"text":"b1"}}]}',
-//     name: 'h1',
-//     status: 'Pending confirmation',
-//     user_email: 'salemmazen27@gmail.com',
-//     file: {
-//       url: 'https://res.cloudinary.com/dc1fhdtwe/raw/upload/v1659604402/scimagz/vjwohqddt1oevy8wqe1f.pdf',
-//       public_id: 'scimagz/vjwohqddt1oevy8wqe1f.pdf'
-//     },
-//     approvedby: 'salemmazen27@gmail.com'
-//   }
-// ]
-// [
-//   {
-//     _id: '62eaec7ec59192bc2b43b8e0',
-//     text: '{"blocks":[{"id":"3YxlWETZYa","type":"embed","data":{"service":"youtube","source":"https://youtu.be/PO6kMafwe8g","embed":"https://www.youtube.com/embed/PO6kMafwe8g","width":580,"height":320,"caption":""}},{"id":"YLC_tD4yNX","type":"paragraph","data":{"text":"hallo"}}]}',
-//     name: 'H1',
-//     user_email: 'salemmazen27@gmail.com'
-//   }
-// ]
-// {
-//   users: [
-//     {
-//       _id: '62ea1a1560a2ca1fbd7737bc',
-//       name: 'May Salim',
-//       email: 'maysalimf@gmail.com',
-//       image: 'https://lh3.googleusercontent.com/a/AItbvmlvQJUbLiXfMb2EFtKiEWFTY4QNn3IJcCf0Isc=s96-c',
-//       emailVerified: null,
-//       role: 'Instructor',
-//       status: 'Approved',
-//       approvedby: 'salemmazen27@gmail.com',
-//       bio: '{"blocks":[{"id":"6jsBJIzluB","type":"paragraph","data":{"text":"this is my bio 6"}}]}'
-//     }
-//   ],
-//   posts: [
-//     {
-//       _id: '62ea27d460a2ca1fbd7737be',
-//       text: '{"blocks":[{"id":"o_5vwQ05K0","type":"paragraph","data":{"text":"B1"}}]}',
-//       name: 'H1',
-//       status: 'Approved',
-//       user_email: 'maysalimf@gmail.com',
-//       approvedby: 'salemmazen27@gmail.com',
-//       file: [Object]
-//     },
-//     {
-//       _id: '62eac9a460a2ca1fbd7737c8',
-//       text: '{"blocks":[{"id":"nHRcmjph-J","type":"paragraph","data":{"text":"lets go"}}]}',
-//       name: 'hallo',
-//       status: 'Approved',
-//       user_email: 'salemmazen27@gmail.com',
-//       approvedby: 'salemmazen27@gmail.com',
-//       file: [Object]
-//     },
-//     {
-//       _id: '62eb7f8fc59192bc2b43b8e1',
-//       text: '{"blocks":[{"id":"39tETbV2ax","type":"paragraph","data":{"text":"b1"}}]}',
-//       name: 'h1',
-//       status: 'Pending confirmation',
-//       user_email: 'salemmazen27@gmail.com',
-//       file: [Object],
-//       approvedby: 'salemmazen27@gmail.com'
-//     }
-//   ]
+//   "blocks":
+//      [
+//       {"id":"FQK06YSu-j","type":"paragraph","data":{"text":"Hello my name is"}},
+//       {"id":"KKtIL_gGEN","type":"header","data":{"text":"Mazen Salem","level":1}},
+//       {"id":"MtqHNuX3fC","type":"paragraph","data":{"text":"and I am the <b>Developer </b>for this site"}},
+//       {"id":"U2kcOW9Fjg","type":"paragraph","data":{"text":"and the<b> co-founder</b> <i>here</i>"}},
+//       {"id":"7Gnn4h4C8n","type":"paragraph","data":{"text":"this is from my local machine"}},
+//       {"id":"vLRXDaVWUx","type":"paragraph","data":{"text":"Hello Again"}}
+//     ]
 // }
