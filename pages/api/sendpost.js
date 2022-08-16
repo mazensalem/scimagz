@@ -49,6 +49,7 @@ export default async (req, res) => {
             status: post.status == "draft" ? "draft" : "Pending confirmation",
           }
         );
+        res.json({ content: "Done" });
       }
     } else if (JSON.parse(req.body).sector == "text") {
       if (JSON.parse(req.body).postid == null) {
@@ -72,6 +73,7 @@ export default async (req, res) => {
             status: post.status == "draft" ? "draft" : "Pending confirmation",
           }
         );
+        res.json({ content: "" });
       }
     } else if (JSON.parse(req.body).sector == "submit") {
       const post = await postcol.findOne({
@@ -86,8 +88,9 @@ export default async (req, res) => {
             approvedby: post.status == "draft" ? approvedby[0].email : null,
           }
         );
+        res.json({ content: r.insertedId.toString() });
       }
     }
-    res.status(200).json({ content: "Done" });
+    // res.status(200).json({ content: "Done" });
   }
 };
