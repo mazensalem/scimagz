@@ -88,9 +88,8 @@ export default async (req, res) => {
             approvedby: post.status == "draft" ? approvedby[0].email : null,
           }
         );
-        res.json({ content: r.insertedId.toString() });
+        res.json({ content: "" });
       }
     }
-    // res.status(200).json({ content: "Done" });
   }
 };
