@@ -4,6 +4,7 @@ import client from "../lib/mongodbconn";
 import { ObjectId } from "mongodb";
 import { getSession } from "next-auth/react";
 import Router from "next/router";
+import { Alert, Button, Form } from "react-bootstrap";
 
 const CustomEditor = dynamic(() => import("../components/richtext"), {
   ssr: false,
@@ -22,9 +23,58 @@ export default function Sendart({ rcoursid, rtext, rcoursename }) {
   const [text, settext] = useState(rtext);
   const [coursname, setcoursname] = useState(rcoursename);
   const [coursid, setcoursid] = useState(rcoursid);
+  const [massage, setmassage] = useState("");
   return (
     <div>
-      <input
+      {massage && (
+        <Alert
+          variant={massage == "Done" ? "success" : "danger"}
+          className="mx-2 w-md-1 ms-md-5"
+          onClose={() => {
+            setmassage("");
+          }}
+          dismissible
+        >
+          {massage}
+        </Alert>
+      )}
+      <Form>
+        <Form.Group className="mb-3 ms-2">
+          <Form.Label>Header</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="title"
+            style={{ width: "80%" }}
+            value={coursname}
+            onChange={(e) => setcoursname(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3 ms-2">
+          <Form.Label>Course</Form.Label>
+          <CustomEditor
+            container="postbody"
+            setContent={settext}
+            content={text}
+            readonly={false}
+          />
+          <div className="border border-1 me-2" id="postbody"></div>
+        </Form.Group>
+        <Button
+          onClick={async () => {
+            const post = await sendcourse(setcoursid, text, coursname, "text");
+            if (coursid == null) {
+              setcoursid(post);
+            }
+            setmassage("Done");
+            Router.push("/?massage=Done");
+          }}
+          className="ms-2"
+          variant="outline-success"
+        >
+          Send text
+        </Button>
+      </Form>
+      {/* <input
         type="text"
         value={coursname}
         onChange={(e) => setcoursname(e.target.value)}
@@ -40,7 +90,7 @@ export default function Sendart({ rcoursid, rtext, rcoursename }) {
         }}
       >
         sendtext
-      </button>
+      </button> */}
     </div>
   );
 }
@@ -65,16 +115,20 @@ export async function getServerSideProps(context) {
           },
         };
       } else {
-        context.res.writeHead(302, {
-          Location: "/",
-          "Cache-Control": "max-age=0",
-        });
+        return {
+          redirect: {
+            destination: "/",
+            permanent: false,
+          },
+        };
       }
     } else {
-      context.res.writeHead(302, {
-        Location: "/",
-        "Cache-Control": "max-age=0",
-      });
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
     }
   } else {
     return {

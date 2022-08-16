@@ -1,384 +1,118 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  Item,
-  Chip,
-  Avatar,
-  TextField,
-  Button,
-} from "@mui/material";
 import React from "react";
+import { Card, Badge } from "react-bootstrap";
 
 export default function aboutus() {
   return (
-    <div>
-      <Box style={{ width: "50%", marginLeft: 20, marginTop: 30 }}>
-        <Typography variant="h4" component="h2">
-          Header
-        </Typography>
-        <Typography variant="p" component="div">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit cum
-          quidem dolore debitis sunt minus dolores, impedit rerum reiciendis
-          corrupti saepe expedita accusamus ipsa, incidunt, molestias illum
-          corporis odio perspiciatis?
-        </Typography>
-      </Box>
-      <Grid
-        container
-        spacing={{ xs: 1, md: 2 }}
-        style={{
-          marginTop: 10,
-        }}
-        justifyContent="center"
-        rowSpacing={4}
-      >
-        <Grid item>
-          <Card
-            variant="outlined"
-            style={{
-              marginTop: 20,
-              marginRight: "auto",
-              marginLeft: 15,
-              width: "90%",
-              textAlign: "center",
-              overflow: "visible",
-            }}
-            sx={{ minWidth: 275 }}
-          >
-            <CardContent style={{ position: "relative", paddingTop: 50 }}>
-              <Avatar
-                src="/mazensalem.jfif"
-                sx={{ width: 80, height: 80 }}
-                style={{
-                  position: "absolute",
-                  right: "50%",
-                  top: 0,
-                  transform: "translate(50%, -50%)",
-                }}
-              />
-              <Typography variant="h5" component="div">
-                Mazen Salem
-              </Typography>
-              <Typography
-                component="div"
-                sx={{ mb: 1.5 }}
-                color="text.secondary"
-              >
-                <Chip label="Co-founder" variant="outlined" />
-              </Typography>
-            </CardContent>
+    <div className="mx-auto w-100 text-center text-md-start ps-md-4">
+      <div>
+        <h1>Our Story</h1>
+        <img
+          src="/ourstory.jpeg"
+          alt="ourstory"
+          width={274}
+          height={274}
+          style={{ border: "1px solid black" }}
+          className="float-md-start me-md-5"
+        />
+        <div className="mx-auto w-50 mt-5">
+          <h4>header</h4>
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate
+          reiciendis consectetur debitis facere, consequatur eligendi animi
+          ratione numquam culpa tempora autem minima hic ullam dignissimos, nam
+          illum fugit esse at!
+        </div>
+      </div>
+
+      <div className="mt-5 pt-5">
+        <h1 className="mt-md-5">Our Team</h1>
+        <div className="w-100 mx-auto p-2 d-md-flex justify-content-md-between flex-md-wrap">
+          <Card className="cardwidth mx-auto bg-dark text-center text-white m-2 p-2 ms-md-5 pt-5 mt-5">
+            <img
+              className="rounded-circle mx-auto position-absolute top-0 start-50 translate-middle"
+              width={80}
+              height={80}
+              src="/mazensalem.jfif"
+            />
+            <Card.Title>MAZEN SALEM</Card.Title>
+            <div className="d-flex justify-content-center justify-content-md-center">
+              <Badge pill bg="secondary" className="me-1">
+                CO-FOUNDER
+              </Badge>
+              <Badge pill bg="secondary">
+                WEB DEVELOPER
+              </Badge>
+            </div>
           </Card>
-        </Grid>
-        <Grid item>
-          <Card
-            variant="outlined"
-            style={{
-              marginTop: 20,
-              marginRight: "auto",
-              marginLeft: 15,
-              width: "90%",
-              textAlign: "center",
-              overflow: "visible",
-            }}
-            sx={{ minWidth: 275 }}
-          >
-            <CardContent style={{ position: "relative", paddingTop: 50 }}>
-              <Avatar
-                src="/mazensalem.jfif"
-                sx={{ width: 80, height: 80 }}
-                style={{
-                  position: "absolute",
-                  right: "50%",
-                  top: 0,
-                  transform: "translate(50%, -50%)",
-                }}
-              />
-              <Typography variant="h5" component="div">
-                Mazen Salem
-              </Typography>
-              <Typography
-                component="div"
-                sx={{ mb: 1.5 }}
-                color="text.secondary"
-              >
-                <Chip label="Co-founder" variant="outlined" />
-              </Typography>
-            </CardContent>
+          <Card className="cardwidth mx-auto bg-dark text-center text-white m-2 p-2 ms-md-5 pt-5 mt-5">
+            <img
+              className="rounded-circle mx-auto position-absolute top-0 start-50 translate-middle"
+              width={80}
+              height={80}
+              src="/mazensalem.jfif"
+            />
+            <Card.Title>MAZEN SALEM</Card.Title>
+            <div className="d-flex justify-content-center justify-content-md-center">
+              <Badge pill bg="secondary" className="me-1">
+                CO-FOUNDER
+              </Badge>
+              <Badge pill bg="secondary">
+                WEB DEVELOPER
+              </Badge>
+            </div>
           </Card>
-        </Grid>{" "}
-        <Grid item>
-          <Card
-            variant="outlined"
-            style={{
-              marginTop: 20,
-              marginRight: "auto",
-              marginLeft: 15,
-              width: "90%",
-              textAlign: "center",
-              overflow: "visible",
-            }}
-            sx={{ minWidth: 275 }}
-          >
-            <CardContent style={{ position: "relative", paddingTop: 50 }}>
-              <Avatar
-                src="/mazensalem.jfif"
-                sx={{ width: 80, height: 80 }}
-                style={{
-                  position: "absolute",
-                  right: "50%",
-                  top: 0,
-                  transform: "translate(50%, -50%)",
-                }}
-              />
-              <Typography variant="h5" component="div">
-                Mazen Salem
-              </Typography>
-              <Typography
-                component="div"
-                sx={{ mb: 1.5 }}
-                color="text.secondary"
-              >
-                <Chip label="Co-founder" variant="outlined" />
-              </Typography>
-            </CardContent>
+          <Card className="cardwidth mx-auto bg-dark text-center text-white m-2 p-2 ms-md-5 pt-5 mt-5">
+            <img
+              className="rounded-circle mx-auto position-absolute top-0 start-50 translate-middle"
+              width={80}
+              height={80}
+              src="/mazensalem.jfif"
+            />
+            <Card.Title>MAZEN SALEM</Card.Title>
+            <div className="d-flex justify-content-center justify-content-md-center">
+              <Badge pill bg="secondary" className="me-1">
+                CO-FOUNDER
+              </Badge>
+              <Badge pill bg="secondary">
+                WEB DEVELOPER
+              </Badge>
+            </div>
           </Card>
-        </Grid>{" "}
-        <Grid item>
-          <Card
-            variant="outlined"
-            style={{
-              marginTop: 20,
-              marginRight: "auto",
-              marginLeft: 15,
-              width: "90%",
-              textAlign: "center",
-              overflow: "visible",
-            }}
-            sx={{ minWidth: 275 }}
-          >
-            <CardContent style={{ position: "relative", paddingTop: 50 }}>
-              <Avatar
-                src="/mazensalem.jfif"
-                sx={{ width: 80, height: 80 }}
-                style={{
-                  position: "absolute",
-                  right: "50%",
-                  top: 0,
-                  transform: "translate(50%, -50%)",
-                }}
-              />
-              <Typography variant="h5" component="div">
-                Mazen Salem
-              </Typography>
-              <Typography
-                component="div"
-                sx={{ mb: 1.5 }}
-                color="text.secondary"
-              >
-                <Chip label="Co-founder" variant="outlined" />
-              </Typography>
-            </CardContent>
+          <Card className="cardwidth mx-auto bg-dark text-center text-white m-2 p-2 ms-md-5 pt-5 mt-5">
+            <img
+              className="rounded-circle mx-auto position-absolute top-0 start-50 translate-middle"
+              width={80}
+              height={80}
+              src="/mazensalem.jfif"
+            />
+            <Card.Title>MAZEN SALEM</Card.Title>
+            <div className="d-flex justify-content-center justify-content-md-center">
+              <Badge pill bg="secondary" className="me-1">
+                CO-FOUNDER
+              </Badge>
+              <Badge pill bg="secondary">
+                WEB DEVELOPER
+              </Badge>
+            </div>
           </Card>
-        </Grid>{" "}
-        <Grid item>
-          <Card
-            variant="outlined"
-            style={{
-              marginTop: 20,
-              marginRight: "auto",
-              marginLeft: 15,
-              width: "90%",
-              textAlign: "center",
-              overflow: "visible",
-            }}
-            sx={{ minWidth: 275 }}
-          >
-            <CardContent style={{ position: "relative", paddingTop: 50 }}>
-              <Avatar
-                src="/mazensalem.jfif"
-                sx={{ width: 80, height: 80 }}
-                style={{
-                  position: "absolute",
-                  right: "50%",
-                  top: 0,
-                  transform: "translate(50%, -50%)",
-                }}
-              />
-              <Typography variant="h5" component="div">
-                Mazen Salem
-              </Typography>
-              <Typography
-                component="div"
-                sx={{ mb: 1.5 }}
-                color="text.secondary"
-              >
-                <Chip label="Co-founder" variant="outlined" />
-              </Typography>
-            </CardContent>
+          <Card className="cardwidth mx-auto bg-dark text-center text-white m-2 p-2 ms-md-5 pt-5 mt-5">
+            <img
+              className="rounded-circle mx-auto position-absolute top-0 start-50 translate-middle"
+              width={80}
+              height={80}
+              src="/mazensalem.jfif"
+            />
+            <Card.Title>MAZEN SALEM</Card.Title>
+            <div className="d-flex justify-content-center justify-content-md-center">
+              <Badge pill bg="secondary" className="me-1">
+                CO-FOUNDER
+              </Badge>
+              <Badge pill bg="secondary">
+                WEB DEVELOPER
+              </Badge>
+            </div>
           </Card>
-        </Grid>{" "}
-        <Grid item>
-          <Card
-            variant="outlined"
-            style={{
-              marginTop: 20,
-              marginRight: "auto",
-              marginLeft: 15,
-              width: "90%",
-              textAlign: "center",
-              overflow: "visible",
-            }}
-            sx={{ minWidth: 275 }}
-          >
-            <CardContent style={{ position: "relative", paddingTop: 50 }}>
-              <Avatar
-                src="/mazensalem.jfif"
-                sx={{ width: 80, height: 80 }}
-                style={{
-                  position: "absolute",
-                  right: "50%",
-                  top: 0,
-                  transform: "translate(50%, -50%)",
-                }}
-              />
-              <Typography variant="h5" component="div">
-                Mazen Salem
-              </Typography>
-              <Typography
-                component="div"
-                sx={{ mb: 1.5 }}
-                color="text.secondary"
-              >
-                <Chip label="Co-founder" variant="outlined" />
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>{" "}
-        <Grid item>
-          <Card
-            variant="outlined"
-            style={{
-              marginTop: 20,
-              marginRight: "auto",
-              marginLeft: 15,
-              width: "90%",
-              textAlign: "center",
-              overflow: "visible",
-            }}
-            sx={{ minWidth: 275 }}
-          >
-            <CardContent style={{ position: "relative", paddingTop: 50 }}>
-              <Avatar
-                src="/mazensalem.jfif"
-                sx={{ width: 80, height: 80 }}
-                style={{
-                  position: "absolute",
-                  right: "50%",
-                  top: 0,
-                  transform: "translate(50%, -50%)",
-                }}
-              />
-              <Typography variant="h5" component="div">
-                Mazen Salem
-              </Typography>
-              <Typography
-                component="div"
-                sx={{ mb: 1.5 }}
-                color="text.secondary"
-              >
-                <Chip label="Co-founder" variant="outlined" />
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>{" "}
-        <Grid item>
-          <Card
-            variant="outlined"
-            style={{
-              marginTop: 20,
-              marginRight: "auto",
-              marginLeft: 15,
-              width: "90%",
-              textAlign: "center",
-              overflow: "visible",
-            }}
-            sx={{ minWidth: 275 }}
-          >
-            <CardContent style={{ position: "relative", paddingTop: 50 }}>
-              <Avatar
-                src="/mazensalem.jfif"
-                sx={{ width: 80, height: 80 }}
-                style={{
-                  position: "absolute",
-                  right: "50%",
-                  top: 0,
-                  transform: "translate(50%, -50%)",
-                }}
-              />
-              <Typography variant="h5" component="div">
-                Mazen Salem
-              </Typography>
-              <Typography
-                component="div"
-                sx={{ mb: 1.5 }}
-                color="text.secondary"
-              >
-                <Chip label="Co-founder" variant="outlined" />
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>{" "}
-        <Grid item>
-          <Card
-            variant="outlined"
-            style={{
-              marginTop: 20,
-              marginRight: "auto",
-              marginLeft: 15,
-              width: "90%",
-              textAlign: "center",
-              overflow: "visible",
-            }}
-            sx={{ minWidth: 275 }}
-          >
-            <CardContent style={{ position: "relative", paddingTop: 50 }}>
-              <Avatar
-                src="/mazensalem.jfif"
-                sx={{ width: 80, height: 80 }}
-                style={{
-                  position: "absolute",
-                  right: "50%",
-                  top: 0,
-                  transform: "translate(50%, -50%)",
-                }}
-              />
-              <Typography variant="h5" component="div">
-                Mazen Salem
-              </Typography>
-              <Typography
-                component="div"
-                sx={{ mb: 1.5 }}
-                color="text.secondary"
-              >
-                <Chip label="Co-founder" variant="outlined" />
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>{" "}
-      </Grid>
-      <Box
-        style={{
-          textAlign: "center",
-          fontWeight: "bold",
-          marginTop: 40,
-          marginBottom: 40,
-        }}
-      >
-        Contact Us at <a href="mailto:salemmazen27@gmail.com">Email</a>
-      </Box>
+        </div>
+      </div>
     </div>
   );
 }

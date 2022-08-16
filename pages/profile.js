@@ -5,6 +5,15 @@ import { useState } from "react";
 import client from "../lib/mongodbconn";
 import NextRouter from "next/router";
 import Textreader from "../components/Textreader";
+import {
+  Dropdown,
+  ToastContainer,
+  Toast,
+  Button,
+  Alert,
+  ListGroup,
+} from "react-bootstrap";
+import Card from "react-bootstrap/Card";
 
 const CustomEditor = dynamic(() => import("../components/richtext"), {
   ssr: false,
@@ -39,7 +48,8 @@ async function deleteCourse(courseid) {
 export default function Profile({ user, posts, penddingapproval, courses }) {
   const [content, setContent] = useState(user.bio || "{}");
   const [editbiostate, seteditbiostate] = useState(user.bio ? false : true);
-  const [userrole, setuserrole] = useState(user.role || "Student");
+  const [userrole, setuserrole] = useState("");
+  const [massages, setmassages] = useState("");
 
   const { status } = useSession({
     required: true,
@@ -51,192 +61,257 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
 
   return (
     <>
-      {/* sidebar right */}
-      <div name="sidebar" style={{ width: "25%", marginTop: "10px" }}>
-        <div
-          style={{
-            width: "100%",
-            height: 100,
-            margin: "auto",
-            textAlign: "center",
-          }}
-        >
-          <img
-            alt="users image"
-            src={user.image}
-            referrerPolicy="no-referrer"
-          />
-          <div>
-            <strong>{user.name}</strong>
-          </div>
-          <div>{user.email}</div>
-
-          <div>
-            {user.role ? (
-              "you are " + user.role + " and you are " + user.status
-            ) : (
-              <div>
-                <select onChange={(e) => setuserrole(e.target.value)}>
-                  <option>Student</option>
-                  <option value="hinstructor">Instructor</option>
-                  <option value="Instructor">
-                    Instructor (will review other posts)
-                  </option>
-                </select>
-                <button
-                  onClick={async () => {
-                    const r = confirm(
-                      "Are you sure you want to be a " +
-                        (userrole == "Student" ? "Student" : "Instructor")
-                    );
-                    if (r) {
-                      const result = await send(userrole, "role");
-                      if (result == "Done") {
-                        user.role = userrole;
-                        user.status = "Pending Confirmation";
-                        setuserrole(null);
-                      } else {
-                        alert("Error");
-                      }
-                    }
-                  }}
-                >
-                  send role
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* sidebar left */}
-      <div style={{ width: "75%", float: "right" }}>
-        {/* The container of the bio system */}
-        <div
-          style={{
-            padding: 10,
-            border: "1px solid",
-            width: "50%",
-            height: "300px",
-            overflowY: "auto",
-            float: "left",
-          }}
-        >
-          <span>Tell Us about you</span>
-          <div>
-            {/* The Edit button */}
-            {user.bio && (
-              <button
-                onClick={() => {
-                  setContent(user.bio);
-                  seteditbiostate(!editbiostate);
-                }}
+      <div className="w-100 mx-auto text-center">
+        <>
+          {massages == "Something went wrong" ? (
+            <Alert variant="danger" onClose={() => setmassages("")} dismissible>
+              Something went wrong
+            </Alert>
+          ) : (
+            massages && (
+              <Alert
+                variant="success"
+                onClose={() => setmassages("")}
+                dismissible
               >
-                {editbiostate ? "discard" : "edit"}
-              </button>
-            )}
+                {massages}
+              </Alert>
+            )
+          )}
+        </>
 
-            {/* view of the bio */}
+        {userrole && (
+          <ToastContainer className="p-3" position="middle-center">
+            <Toast>
+              <Toast.Header closeButton={false}>
+                <strong className="me-auto">
+                  Are you Sure you want to be{" "}
+                  {userrole == "Student" ? "a student" : "an instructor"}
+                </strong>
+              </Toast.Header>
+              <Toast.Body className="text-start">
+                <Button
+                  onClick={async () => {
+                    const result = await send(userrole, "role");
+                    if (result == "Done") {
+                      user.role = userrole;
+                      user.status = "Pending Confirmation";
+                      setmassages("You have successfully confirmed your role");
+                    } else {
+                      setmassages("Something went wrong");
+                    }
+                    setuserrole("");
+                  }}
+                  className="me-1"
+                >
+                  Confirm
+                </Button>
+                <Button onClick={() => setuserrole("")}>Dismiss</Button>
+              </Toast.Body>
+            </Toast>
+          </ToastContainer>
+        )}
+
+        <div className="d-md-flex">
+          {/* The top card */}
+          <div className="ms-md-4 mt-md-5">
+            <img
+              className="rounded-circle"
+              alt="users image"
+              src={user.image}
+              referrerPolicy="no-referrer"
+            />
+            <Card
+              bg="dark"
+              text="white"
+              className="mt-1 rounded-pill mx-auto"
+              style={{ width: "max-content" }}
+              variant="flush"
+            >
+              <Card.Header>{user.name}</Card.Header>
+            </Card>
             <div>
-              {content == "{}" || editbiostate ? null : (
-                <>
-                  <CustomEditor
-                    setContent={setContent}
-                    content={content}
-                    readonly={true}
-                    container="bioviewer"
-                  />
-                  <div id="bioviewer"></div>
-                </>
+              {user.email}
+              <br />
+              {user.role ? (
+                `${user.status} ${
+                  user.role == "Student" ? "Student" : "Instructor"
+                }`
+              ) : (
+                <div>
+                  <Dropdown>
+                    <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                      Select your role
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={() => setuserrole("Student")}>
+                        Student
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => setuserrole("hInstructor")}>
+                        Instructor
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => setuserrole("Instructor")}>
+                        Instructor (will review other posts)
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
               )}
             </div>
+          </div>
 
-            {/* The editor of the bio */}
-            <div
-              style={{
-                display: content != "{}" && !editbiostate ? "none" : "block",
-              }}
-            >
-              <CustomEditor
-                setContent={setContent}
-                content={content}
-                readonly={false}
-                container="bioeditor"
-              />
-              <div id="bioeditor"></div>
-              <button
-                onClick={async () => {
-                  const result = await send(content, "bio");
-                  if (result == "Done") {
-                    user.bio = content;
-                    seteditbiostate(false);
-                  } else {
-                    alert("Error try again");
-                  }
-                }}
-              >
-                save my bio
-              </button>
-            </div>
-          </div>
-        </div>
-        <div>
-          <h1>Posts</h1>
-          <div>
-            {posts.map((post) => (
-              <div key={post._id}>
-                <a href={"/sendart?id=" + post._id}>{post.name}</a>
-                <button
-                  onClick={() =>
-                    deletePost(post._id) ? NextRouter.push("/") : alert("Error")
-                  }
-                >
-                  delete
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
+          <div className="d-md-flex flex-md-wrap">
+            {/* Bio */}
+            <Card bg="dark" text="white" className="ProfileCard mt-5 mx-auto">
+              <Card.Header className="d-flex justify-content-between align-items-center">
+                About Me
+                {user.bio && (
+                  <Button
+                    variant="outline-light"
+                    onClick={() => {
+                      setContent(user.bio);
+                      seteditbiostate(!editbiostate);
+                    }}
+                    className="float-end"
+                  >
+                    {editbiostate ? "discard" : "edit"}
+                  </Button>
+                )}
+              </Card.Header>
+              <Card.Body>
+                <Card.Text>
+                  {content == "{}" || editbiostate ? null : (
+                    <>
+                      <CustomEditor
+                        setContent={setContent}
+                        content={content}
+                        readonly={true}
+                        container="bioviewer"
+                      />
+                      <div id="bioviewer"></div>
+                    </>
+                  )}
 
-        <div>
-          <h1>courses</h1>
-          <div>
-            {courses.map((course) => (
-              <div key={course._id}>
-                <a href={"/sendcours?id=" + course._id}>{course.name}</a>
-                <button
-                  onClick={() =>
-                    deleteCourse(course._id)
-                      ? NextRouter.push("/")
-                      : alert("Error")
-                  }
-                >
-                  delete
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-        <br />
-        <br />
-        <div>
-          <div>
-            <h1>Users to review</h1>
-            {penddingapproval.users.map((user) => (
-              <div key={user._id}>
-                <a href={"/revart?sector=user&id=" + user._id}>{user.name}</a>{" "}
-                {user.status}
-              </div>
-            ))}
-          </div>
-          <div>
-            <h1>posts to review</h1>
-            {penddingapproval.posts.map((post) => (
-              <div key={post._id}>
-                <a href={"/revart?sector=post&id=" + post._id}>{post.name}</a>{" "}
-                {post.status}
-              </div>
-            ))}
+                  {/* The editor of the bio */}
+                  <div
+                    style={{
+                      display:
+                        content != "{}" && !editbiostate ? "none" : "block",
+                    }}
+                  >
+                    <CustomEditor
+                      setContent={setContent}
+                      content={content}
+                      readonly={false}
+                      container="bioeditor"
+                    />
+                    <div id="bioeditor"></div>
+                    <Button
+                      variant="outline-light"
+                      onClick={async () => {
+                        const result = await send(content, "bio");
+                        if (result == "Done") {
+                          user.bio = content;
+                          seteditbiostate(false);
+                          setmassages("you have successfully changed your bio");
+                        } else {
+                          setmassages("Something went wrong");
+                        }
+                      }}
+                    >
+                      save my bio
+                    </Button>
+                  </div>
+                </Card.Text>
+              </Card.Body>
+            </Card>
+
+            {/* Your Posts */}
+            <Card className="ProfileCard mt-5 mx-auto text-start">
+              <Card.Header>Your Posts</Card.Header>
+              <ListGroup variant="flush">
+                {posts.map((post) => (
+                  <ListGroup.Item
+                    key={post._id}
+                    className="d-flex justify-content-between"
+                  >
+                    <a href={"/sendart?id=" + post._id}>{post.name}</a>
+                    <Button
+                      variant="danger"
+                      onClick={() =>
+                        deletePost(post._id)
+                          ? NextRouter.push("/?massage=postdeleted")
+                          : setmassages("Something went wrong")
+                      }
+                    >
+                      delete
+                    </Button>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Card>
+
+            {/* Your Courses */}
+            <Card className="ProfileCard mt-5 mx-auto text-start">
+              <Card.Header>Your Courses</Card.Header>
+              <ListGroup variant="flush">
+                {courses.map((course) => (
+                  <ListGroup.Item
+                    key={course._id}
+                    className="d-flex justify-content-between"
+                  >
+                    <a href={"/sendcours?id=" + course._id}>{course.name}</a>
+                    <Button
+                      variant="danger"
+                      onClick={() =>
+                        deleteCourse(course._id)
+                          ? NextRouter.push("/?massage=coursedeleted")
+                          : setmassages("Something went wrong")
+                      }
+                    >
+                      delete
+                    </Button>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Card>
+
+            {/* Users to review */}
+            <Card className="ProfileCard mt-5 mx-auto text-start">
+              <Card.Header>Users to review</Card.Header>
+              <ListGroup variant="flush">
+                {penddingapproval.users.map((user) => (
+                  <ListGroup.Item
+                    key={user._id}
+                    className="d-flex justify-content-between"
+                  >
+                    <a href={"/revart?sector=user&id=" + user._id}>
+                      {user.name}
+                    </a>
+                    <p>{user.status}</p>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Card>
+
+            {/* Posts to review */}
+            <Card className="ProfileCard mt-5 mx-auto text-start">
+              <Card.Header>Posts to review</Card.Header>
+              <ListGroup variant="flush">
+                {penddingapproval.posts.map((post) => (
+                  <ListGroup.Item
+                    key={post._id}
+                    className="d-flex justify-content-between"
+                  >
+                    <a href={"/revart?sector=post&id=" + post._id}>
+                      {post.name}
+                    </a>
+                    <p>{post.status}</p>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Card>
           </div>
         </div>
       </div>

@@ -4,23 +4,65 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  height: 100vh;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+#__next {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
-
+.w-max-content {
+  width: max-content;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.cardwidth {
+  width: 70%;
+}
+.iframestyle {
+  max-width: 400px;
+}
+.Titlewidth {
+  max-width: 100px;
+}
+.w-80 {
+  width: 80%;
+}
+.ProfileCard {
+  width: 80%;
+}
+@media screen and (min-width: 768px) {
+  .footerbody {
+    max-width: 463px;
+    float: left;
+  }
+  .footercontactlist {
+    width: 35%;
+    float: right;
+  }
+  .w-md-1 {
+    width: 80%;
+  }
+  .w-md-2 {
+    width: 20%;
+    float: right;
+  }
+  .w-md-100 {
+    width: 100% !important;
+  }
+  .cardwidth {
+    width: max-content;
+  }
+  .iframestyle {
+    width: 800px;
+    height: 300px;
+  }
+  .ProfileCard {
+    width: 40%;
+  }
+}
 * {
   box-sizing: border-box;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
 }

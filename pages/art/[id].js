@@ -1,47 +1,64 @@
 import { ObjectId } from "mongodb";
 import React from "react";
 import client from "../../lib/mongodbconn";
-import RichReader from "../../components/Textreader";
 import { getSession } from "next-auth/react";
-import { Typography } from "@mui/material";
 import Router from "next/router";
+import { Alert, Card } from "react-bootstrap";
+import dynamic from "next/dynamic";
+
+const CustomEditor = dynamic(() => import("../../components/richtext"), {
+  ssr: false,
+});
 
 export default function Post({ post, isrevewing, userid }) {
   return (
     <div>
       {isrevewing ? (
         <>
-          <p>you are revewing this articale</p>
-          <a href={"/revart/?sector=post&id=" + post._id} target="blank">
-            send a Reveiw
-          </a>
+          <Alert variant="dark" className="mx-3">
+            you are revewing this articale
+            <Alert.Link
+              target="blank"
+              href={"/revart/?sector=post&id=" + post._id}
+            >
+              Send a revewing
+            </Alert.Link>
+          </Alert>
         </>
       ) : null}
+
+      <div className="w-80 mx-auto mx-md-0">
+        <Card className="container-fluid bg-dark text-white Titlewidth text-center float-start float-md-none mx-2">
+          <Card.Title>{post.name}</Card.Title>
+        </Card>
+
+        <div
+          style={{ cursor: "pointer" }}
+          className="mx-2"
+          onClick={() => Router.push("/user/" + userid)}
+        >
+          by {post.user_email}
+        </div>
+      </div>
+
       <br />
-      <Typography variant="h3" component="h1">
-        {post.name}
-      </Typography>
-      <Typography
-        component="h2"
-        style={{
-          fontWeight: "bold",
-          fontSize: 14,
-          color: "gray",
-          cursor: "pointer",
-          width: "max-content",
-        }}
-        onClick={() => Router.push("/user/" + userid)}
-      >
-        by {post.user_email}
-      </Typography>
-      <RichReader content={JSON.parse(post.text)} />
+      <h3 className="ps-2">Summary</h3>
+      <CustomEditor
+        setContent={() => {}}
+        content={post.text}
+        readonly={true}
+        container="postbody"
+      />
+      <div className="mx-auto w-80" id="postbody"></div>
+
+      <br />
+      <h3 className="ps-2">File</h3>
       <object
         type="application/pdf"
         width="100%"
         height="500px"
         data={post.file.url}
       ></object>
-      <a href={post.file.url}>Open</a>
     </div>
   );
 }
@@ -69,15 +86,19 @@ export async function getServerSideProps(context) {
       post._id = post._id.toString();
       return { props: { post, isrevewing: true } };
     } else {
-      context.res.writeHead(302, {
-        Location: "/",
-        "Cache-Control": "max-age=0",
-      });
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
     }
   } else {
-    context.res.writeHead(302, {
-      Location: "/",
-      "Cache-Control": "max-age=0",
-    });
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
   }
 }

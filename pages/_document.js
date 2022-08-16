@@ -9,6 +9,22 @@ export default function Document() {
           src="https://widget.cloudinary.com/v2.0/global/all.js"
           type="text/javascript"
         ></script>
+        <script
+          src="https://unpkg.com/react/umd/react.production.min.js"
+          crossorigin
+        ></script>
+
+        <script
+          src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"
+          crossorigin
+        ></script>
+
+        <script
+          src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
+          crossorigin
+        ></script>
+
+        <script>var Alert = ReactBootstrap.Alert;</script>
         <link rel="icon" href="/logo.jpg" />
         <title>SMZ</title>
       </Head>

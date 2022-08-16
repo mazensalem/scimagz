@@ -37,6 +37,7 @@ const CustomEditor = (props) => {
     };
   }, []);
   const initEditor = () => {
+    console.log("init");
     const editor = new EditorJS({
       holder: EDITTOR_HOLDER_ID,
       data: JSON.parse(content),

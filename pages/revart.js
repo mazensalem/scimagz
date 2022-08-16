@@ -2,50 +2,85 @@ import { ObjectId } from "mongodb";
 import { getSession } from "next-auth/react";
 import client from "../lib/mongodbconn";
 import Route from "next/router";
-import { Button } from "@mui/material";
-
-async function sendrev(id, sector, content) {
-  const cont = await fetch("/api/sendrev", {
-    method: "POST",
-    body: JSON.stringify({ id, sector, content }),
-  }).then((x) => x.json());
-  if (cont.content != "Done") {
-    alert("Some things went wrong");
-  }
-  return cont.content;
-}
+import Button from "react-bootstrap/Button";
+import { Alert, Spinner } from "react-bootstrap";
+import { useState } from "react";
 
 export default function revart({ id, sector }) {
+  const [massage, setmassage] = useState("");
+  const [msector, setmsecor] = useState("");
+  const [loading, setloading] = useState(false);
+
+  async function sendrev(id, sector, content) {
+    const cont = await fetch("/api/sendrev", {
+      method: "POST",
+      body: JSON.stringify({ id, sector, content }),
+    }).then((x) => x.json());
+    if (cont.content != "Done") {
+      setmassage("Some things went wrong");
+      setmsecor("danger");
+    }
+    return cont.content;
+  }
+
   return (
-    <div style={{ textAlign: "center" }}>
-      <a
-        style={{ fontSize: "30px" }}
-        target="_blank"
-        rel="noreferrer"
-        href={`/${sector == "post" ? "art" : "user"}/${id}`}
-      >
-        see the {sector == "post" ? "post" : "profile"}
-      </a>
-      <br />
-      <Button
-        variant="contained"
-        onClick={() => {
-          sendrev(id, sector, "Approved");
-          Route.push("/");
-        }}
-      >
-        Approved
-      </Button>
-      <Button
-        variant="contained"
-        color="error"
-        onClick={() => {
-          sendrev(id, sector, "denied");
-          Route.push("/");
-        }}
-      >
-        denied
-      </Button>
+    <div className="w-100">
+      {massage && (
+        <Alert
+          variant={msector}
+          className="mx-2"
+          onClose={() => {
+            setmassage("");
+            setmsecor("");
+          }}
+          dismissible
+        >
+          {massage}
+        </Alert>
+      )}
+
+      <iframe
+        className="container-fluid mx-auto mx-md-0 ms-md-3 d-block iframestyle float-md-start"
+        src={`/${sector == "post" ? "art" : "user"}/${id}`}
+      ></iframe>
+      <div className="mt-5 pt-3 text-center">
+        <Button
+          variant="outline-danger mx-1"
+          onClick={() => {
+            setloading(true);
+            sendrev(id, sector, "denied");
+            Route.push("/?massage=Denied");
+          }}
+          disabled={loading}
+        >
+          Deniy
+        </Button>
+        {loading ? (
+          <Spinner variant="dark" animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        ) : (
+          <Button
+            as="a"
+            href={`/${sector == "post" ? "art" : "user"}/${id}`}
+            variant="outline-info mx-1"
+          >
+            Go to the page
+          </Button>
+        )}
+
+        <Button
+          onClick={() => {
+            setloading(true);
+            sendrev(id, sector, "Approved");
+            Route.push("/?massage=Approved");
+          }}
+          variant="outline-success mx-1"
+          disabled={loading}
+        >
+          Accept
+        </Button>
+      </div>
     </div>
   );
 }
@@ -63,15 +98,16 @@ export async function getServerSideProps(context) {
       const post = await pcol.findOne({ _id: ObjectId(id) });
       if (
         post.approvedby === session.user.email &&
-        post.status == "Pending Confirmation"
+        post.status == "Pending confirmation"
       ) {
         return { props: { id, sector } };
       } else {
-        context.res.writeHead(302, {
-          Location: "/",
-          "Cache-Control": "max-age=0",
-        });
-        return { props: {} };
+        return {
+          redirect: {
+            destination: "/?massage=nopost",
+            permanent: false,
+          },
+        };
       }
     } else if (sector == "user") {
       const ucol = await db.collection("users");
@@ -80,27 +116,30 @@ export async function getServerSideProps(context) {
         user.approvedby === session.user.email &&
         user.status == "Pending Confirmation"
       ) {
-        // console.log({id, sector, ...user})
         return { props: { id, sector } };
       } else {
-        context.res.writeHead(302, {
-          Location: "/",
-          "Cache-Control": "max-age=0",
-        });
-        return { props: {} };
+        return {
+          redirect: {
+            destination: "/?massage=nouser",
+            permanent: false,
+          },
+        };
       }
     } else {
-      context.res.writeHead(302, {
-        Location: "/",
-        "Cache-Control": "max-age=0",
-      });
-      return { props: {} };
+      return {
+        redirect: {
+          destination: "/?massage=missing+p",
+          permanent: false,
+        },
+      };
     }
   } else {
-    context.res.writeHead(302, {
-      Location: "/",
-      "Cache-Control": "max-age=0",
-    });
-    return { props: {} };
+    return {
+      redirect: {
+        destination: "/?massage=missing+p",
+        permanent: false,
+      },
+    };
   }
+  return { props: {} };
 }

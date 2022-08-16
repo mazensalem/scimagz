@@ -1,18 +1,53 @@
 import client from "../lib/mongodbconn";
 import Post from "../components/Post";
+import { useState } from "react";
+import { Alert } from "react-bootstrap";
 
-export default function Home({ posts }) {
+export default function Home({ posts, rmassage }) {
+  const [massage, setmassage] = useState(rmassage);
   return (
     <div>
       <div>
-        {posts ? (
+        {massage && (
+          <Alert
+            variant={
+              massage == "Approved" || massage == "Done" ? "success" : "danger"
+            }
+            className="mx-2 w-md-1 ms-md-5"
+            onClose={() => {
+              setmassage("");
+            }}
+            dismissible
+          >
+            {massage == "Approved"
+              ? "You have approved a user"
+              : massage == "Denied"
+              ? "You have denied a user"
+              : massage == "nouser"
+              ? "You can't review that user"
+              : massage == "nopost"
+              ? "You can't review that artical"
+              : massage == "postdeleted"
+              ? "You Have deleted a post"
+              : massage == "coursedeleted"
+              ? "You have deleted a course"
+              : massage == "Done"
+              ? "You have updated a post"
+              : "Error"}
+          </Alert>
+        )}
+      </div>
+      <div>
+        {posts.length ? (
           posts.map((post) => (
             <>
               <Post key={post._id} post={post} sector="posts" />
             </>
           ))
         ) : (
-          <>no posts is here yet</>
+          <div className="mx-auto" style={{ width: "max-content" }}>
+            no articals is here yet
+          </div>
         )}
       </div>
     </div>
@@ -31,6 +66,6 @@ export async function getServerSideProps(context) {
     posts[i]._id = posts[i]._id.toString();
   }
   return {
-    props: { posts },
+    props: { posts, rmassage: context.query.massage || "" },
   };
 }

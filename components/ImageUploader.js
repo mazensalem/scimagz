@@ -1,4 +1,5 @@
 import { generateSignature } from "../utils/generateSignature";
+import { Button } from "react-bootstrap";
 
 export function ImageUpload({ setContent, content, postid }) {
   async function handleWidgetClick() {
@@ -45,9 +46,14 @@ export function ImageUpload({ setContent, content, postid }) {
   return (
     <div>
       <div>
-        <button type="button" onClick={handleWidgetClick}>
+        <Button
+          variant="outline-success"
+          type="button"
+          className="ms-2"
+          onClick={handleWidgetClick}
+        >
           Upload file
-        </button>
+        </Button>
         {content ? <object data={content.url} type="application/pdf" /> : null}
       </div>
     </div>

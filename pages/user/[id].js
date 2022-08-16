@@ -1,83 +1,95 @@
 import { ObjectId } from "mongodb";
 import React from "react";
 import client from "../../lib/mongodbconn";
-import TextReader from "../../components/Textreader";
-import {
-  Avatar,
-  Card,
-  CardContent,
-  Chip,
-  Grid,
-  Typography,
-} from "@mui/material";
-import { Box } from "@mui/system";
+import dynamic from "next/dynamic";
+import { ListGroup, Card } from "react-bootstrap";
 
-export default function User({ user }) {
+const CustomEditor = dynamic(() => import("../../components/richtext"), {
+  ssr: false,
+});
+
+export default function User({ user, posts, courses }) {
   return (
-    <Grid
-      container
-      style={{
-        marginTop: 10,
-      }}
-      rowSpacing={4}
-    >
-      <Grid xs={12} md={3} item>
-        <Card
-          style={{
-            marginTop: 40,
-            marginRight: "auto",
-            width: "90%",
-            textAlign: "center",
-            overflow: "visible",
-          }}
-          sx={{ minWidth: 275 }}
-          elevation={0}
-        >
-          <CardContent style={{ position: "relative", paddingTop: 50 }}>
-            <Avatar
-              src={user.image}
-              sx={{ width: 80, height: 80 }}
-              style={{
-                position: "absolute",
-                right: "50%",
-                top: 0,
-                transform: "translate(50%, -50%)",
-              }}
-            />
-            <Typography variant="h5" component="div">
-              {user.name}
-            </Typography>
-            <Typography component="div">{user.email}</Typography>
-            <Typography component="div">
-              {user.status} {user.role}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
+    <>
+      <div className="d-md-flex w-100 mx-auto">
+        {/* The top card */}
+        <div className="ms-md-4 mt-md-5 text-center">
+          <img
+            className="rounded-circle"
+            alt="users image"
+            src={user.image}
+            referrerPolicy="no-referrer"
+          />
+          <Card
+            bg="dark"
+            text="white"
+            className="mt-1 rounded-pill mx-auto"
+            style={{ width: "max-content" }}
+            variant="flush"
+          >
+            <Card.Header>{user.name}</Card.Header>
+          </Card>
+          <div>
+            {user.email}
+            <br />
+            {`${user.status} ${
+              user.role == "Student" ? "Student" : "Instructor"
+            }`}
+          </div>
+        </div>
 
-      <Grid item md={3} xs={0}></Grid>
+        <div className="d-md-flex flex-md-wrap ms-2">
+          {/* Bio */}
+          <Card bg="dark" text="white" className="ProfileCard mt-5 mx-auto">
+            <Card.Header className="d-flex justify-content-between align-items-center">
+              About Me
+            </Card.Header>
+            <Card.Body>
+              <Card.Text as="div">
+                <>
+                  <CustomEditor
+                    content={user.bio}
+                    readonly={true}
+                    container="bioviewer"
+                  />
+                  <div id="bioviewer"></div>
+                </>
+              </Card.Text>
+            </Card.Body>
+          </Card>
 
-      <Grid item xs={12} md={6}>
-        <Card
-          style={{
-            marginTop: 20,
-            marginRight: "auto",
-            width: "90%",
-            textAlign: "center",
-            overflow: "visible",
-          }}
-          sx={{ minWidth: 275 }}
-          elevation={0}
-        >
-          <CardContent style={{ position: "relative", paddingTop: 50 }}>
-            <h3>About me</h3>
-            <Typography component="div">
-              <TextReader content={JSON.parse(user.bio)} />
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
+          {/* Your Posts */}
+          <Card className="ProfileCard mt-5 mx-auto text-start">
+            <Card.Header>Posts</Card.Header>
+            <ListGroup variant="flush">
+              {posts.map((post) => (
+                <ListGroup.Item
+                  key={post._id}
+                  className="d-flex justify-content-between"
+                >
+                  <a href={"/sendart?id=" + post._id}>{post.name}</a>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          </Card>
+
+          {/* Your Courses */}
+          <Card className="ProfileCard mt-5 mx-auto text-start">
+            <Card.Header>Your Courses</Card.Header>
+            <ListGroup variant="flush">
+              {courses.map((course) => (
+                <ListGroup.Item
+                  key={course._id}
+                  className="d-flex justify-content-between"
+                >
+                  <a href={"/sendcours?id=" + course._id}>{course.name}</a>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          </Card>
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -86,13 +98,27 @@ export async function getServerSideProps(context) {
   const cl = await client;
   const db = await cl.db();
   const ucol = await db.collection("users");
+  const pcol = await db.collection("posts");
+  const ccol = await db.collection("courses");
   const user = await ucol.findOne({ _id: ObjectId(id) });
   if (!user) {
-    context.res.writeHead(302, {
-      Location: "/",
-      "Cache-Control": "max-age=0",
-    });
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  const rp = await pcol.find({ user_email: user.email });
+  const posts = await rp.toArray();
+  const rc = await ccol.find({ user_email: user.email });
+  const courses = await rc.toArray();
+  for (let i = 0; i < posts.length; i++) {
+    posts[i]._id = null;
+  }
+  for (let i = 0; i < courses.length; i++) {
+    courses[i]._id = null;
   }
   user._id = null;
-  return { props: { user } };
+  return { props: { user, posts, courses } };
 }

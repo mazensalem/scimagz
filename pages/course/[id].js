@@ -2,31 +2,39 @@ import { ObjectId } from "mongodb";
 import React from "react";
 import client from "../../lib/mongodbconn";
 import RichReader from "../../components/Textreader";
-import { Typography } from "@mui/material";
+import { Card } from "react-bootstrap";
 import Router from "next/router";
+import dynamic from "next/dynamic";
 
+const CustomEditor = dynamic(() => import("../../components/richtext"), {
+  ssr: false,
+});
 export default function Course({ course, userid }) {
   return (
     <div>
-      <Typography variant="h3" component="h1">
-        {course.name}
-      </Typography>
-      <Typography
-        component="h2"
-        style={{
-          fontWeight: "bold",
-          fontSize: 14,
-          color: "gray",
-          cursor: "pointer",
-          width: "max-content",
-        }}
-        onClick={() => {
-          Router.push("/user/" + userid);
-        }}
-      >
-        by {course.user_email}
-      </Typography>
-      <RichReader content={JSON.parse(course.text)} />
+      <div className="w-80 mx-auto mx-md-0">
+        <Card className="container-fluid bg-dark text-white Titlewidth text-center float-start float-md-none mx-2">
+          <Card.Title>{course.name}</Card.Title>
+        </Card>
+
+        <div
+          style={{ cursor: "pointer" }}
+          className="mx-2"
+          onClick={() => Router.push("/user/" + userid)}
+        >
+          by {course.user_email}
+        </div>
+      </div>
+
+      <br />
+      <h3 className="ps-2">Summary</h3>
+      <CustomEditor
+        setContent={() => {}}
+        content={course.text}
+        readonly={true}
+        container="postbody"
+      />
+      <div className="mx-auto w-80" id="postbody"></div>
     </div>
   );
 }
@@ -43,9 +51,11 @@ export async function getServerSideProps(context) {
     course._id = null;
     return { props: { course, userid: ucourse._id.toString() } };
   } else {
-    context.res.writeHead(302, {
-      Location: "/",
-      "Cache-Control": "max-age=0",
-    });
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
   }
 }

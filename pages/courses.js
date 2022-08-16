@@ -4,15 +4,13 @@ import Post from "../components/Post";
 export default function Home({ courses }) {
   return (
     <div>
-      <div>
-        {courses ? (
-          courses.map((course) => (
-            <Post key={course.id} post={course} sector="courses" />
-          ))
-        ) : (
-          <>no courses is here yet</>
-        )}
-      </div>
+      {courses ? (
+        courses.map((course) => (
+          <Post key={course.id} post={course} sector="courses" />
+        ))
+      ) : (
+        <>no courses is here yet</>
+      )}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import client from "../lib/mongodbconn";
 import { ObjectId } from "mongodb";
 import { getSession } from "next-auth/react";
 import Router from "next/router";
+import { Button, Form, Alert } from "react-bootstrap";
 
 const CustomEditor = dynamic(() => import("../components/richtext"), {
   ssr: false,
@@ -32,37 +33,70 @@ export default function Sendart({ rpostid, rtext, rfile, rpostname, rstatus }) {
   const [postname, setpostname] = useState(rpostname);
   const [postid, setpostid] = useState(rpostid);
   const [status, setstatus] = useState(rstatus);
+  const [massage, setmassage] = useState("");
   return (
     <div>
-      <input
-        type="text"
-        value={postname}
-        onChange={(e) => setpostname(e.target.value)}
-      />
-      <CustomEditor container="postbody" setContent={settext} content={text} />
-      <div id="postbody"></div>
-      <button
-        onClick={async () => {
-          const post = await sendart(postid, text, postname, "text");
-          if (postid == null) {
-            setpostid(post);
-          }
-          alert("Success");
-        }}
-      >
-        sendtext
-      </button>
-
-      <ImageUpload postid={postid} setContent={setfile} content={file} />
-      <button
-        onClick={async () => {
-          await sendart(postid, "", "", "submit");
-          setstatus(status == "draft" ? "Pending confirmation" : "draft");
-          Router.push("/");
-        }}
-      >
-        {status == "draft" || status == null ? "send" : "unsend"}
-      </button>
+      {massage && (
+        <Alert
+          variant={massage == "Done" ? "success" : "danger"}
+          className="mx-2 w-md-1 ms-md-5"
+          onClose={() => {
+            setmassage("");
+          }}
+          dismissible
+        >
+          massage
+        </Alert>
+      )}
+      <Form>
+        <Form.Group className="mb-3 ms-2">
+          <Form.Label>Header</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="title"
+            style={{ width: "80%" }}
+            value={postname}
+            onChange={(e) => setpostname(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3 ms-2">
+          <Form.Label>Summary</Form.Label>
+          <CustomEditor
+            container="postbody"
+            setContent={settext}
+            content={text}
+            readonly={false}
+          />
+          <div className="border border-1 me-2" id="postbody"></div>
+        </Form.Group>
+        <Button
+          onClick={async () => {
+            const post = await sendart(postid, text, postname, "text");
+            if (postid == null) {
+              setpostid(post);
+            }
+            setmassage("Done");
+          }}
+          className="ms-2"
+          variant="outline-success"
+        >
+          Send text
+        </Button>
+        <ImageUpload postid={postid} setContent={setfile} content={file} />
+        <Button
+          onClick={async () => {
+            await sendart(postid, "", "", "submit");
+            setstatus(status == "draft" ? "Pending confirmation" : "draft");
+            Router.push("/?massage=Done");
+          }}
+          className="ms-2 mt-3"
+          variant="outline-success"
+        >
+          {status == "draft" || status == null
+            ? "send for review"
+            : "make it draft"}
+        </Button>
+      </Form>
     </div>
   );
 }
@@ -86,10 +120,12 @@ export async function getServerSideProps(context) {
         },
       };
     } else {
-      context.res.writeHead(302, {
-        Location: "/",
-        "Cache-Control": "max-age=0",
-      });
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
     }
   } else {
     return {

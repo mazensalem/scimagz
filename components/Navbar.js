@@ -1,224 +1,101 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
+import React from "react";
+import Container from "react-bootstrap/Container";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
 import { useSession, signIn, signOut } from "next-auth/react";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
-const settings = ["Profile", "Logout"];
-
-export default function Nav() {
-  const { data: session } = useSession();
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
+export default function Navcom() {
+  let { data: session, status } = useSession();
+  const pathname = useRouter().pathname;
   return (
-    <AppBar style={{ position: "sticky" }}>
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Avatar
-            sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
-            alt="LOGO"
+    <Navbar bg="dark" variant="dark" expand="md" className="mb-4">
+      <Container>
+        <Navbar.Brand href="/">
+          <img
             src="/logo.jpg"
+            width="30"
+            height="30"
+            className="d-inline-block align-top mx-1"
+            alt="SMZ logo"
           />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            SMZ
-          </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              <MenuItem
-                onClick={() => {
-                  handleCloseNavMenu();
-                  Router.push("/courses");
-                }}
-              >
-                <Typography textAlign="center">Courses</Typography>
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleCloseNavMenu();
-                  Router.push("/sendart");
-                }}
-              >
-                <Typography textAlign="center">Send Article</Typography>
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleCloseNavMenu();
-                  Router.push("/aboutus");
-                }}
-              >
-                <Typography textAlign="center">About Us</Typography>
-              </MenuItem>
-            </Menu>
-          </Box>
-          <Avatar
-            sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
-            alt="LOGO"
-            src="/logo.jpg"
-          />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            SMZ
-          </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            <Button
-              onClick={() => {
-                handleCloseUserMenu();
-                Router.push("/courses");
-              }}
-              sx={{ my: 2, color: "white", display: "block" }}
+          SMZ
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link
+              className={pathname == "/courses" && "active"}
+              href="/courses"
             >
               Courses
-            </Button>
-            <Button
-              onClick={() => {
-                handleCloseUserMenu();
-                Router.push("/sendart");
-              }}
-              sx={{ my: 2, color: "white", display: "block" }}
+            </Nav.Link>
+            <Nav.Link
+              className={pathname == "/sendart" && "active"}
+              href="/sendart"
             >
-              send artical
-            </Button>
-            <Button
-              onClick={() => {
-                handleCloseUserMenu();
-                Router.push("/aboutus");
-              }}
-              sx={{ my: 2, color: "white", display: "block" }}
+              Send Artical
+            </Nav.Link>
+            <Nav.Link
+              className={pathname == "/profile" && "active"}
+              href="/profile"
+            >
+              Profile
+            </Nav.Link>
+            <Nav.Link
+              className={pathname == "/aboutus" && "active"}
+              href="/aboutus"
             >
               About Us
-            </Button>
-          </Box>
-
-          <Box sx={{ flexGrow: 0 }}>
-            {session ? (
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={session.user.name} src={session.user.image} />
-              </IconButton>
-            ) : (
-              <Button
-                onClick={() => signIn()}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                Login
-              </Button>
-            )}
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem
-                  key={setting}
-                  onClick={() => {
-                    setAnchorElUser(null);
-                    if (setting == "Logout") {
-                      signOut();
-                    } else {
-                      Router.push("/profile");
-                    }
-                  }}
-                >
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        </Toolbar>
+            </Nav.Link>
+          </Nav>
+          <Nav>
+            <Nav.Item>
+              {status == "loading" ? (
+                <>
+                  <Spinner variant="light" animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                </>
+              ) : session ? (
+                <>
+                  <Button
+                    onClick={() => signOut()}
+                    className="d-none d-md-block"
+                    variant="outline-danger"
+                  >
+                    Logout
+                  </Button>
+                  <Nav.Link
+                    className="d-block d-md-none text-danger"
+                    onClick={() => signOut()}
+                  >
+                    Logout
+                  </Nav.Link>
+                </>
+              ) : (
+                <>
+                  <Button
+                    onClick={() => signIn()}
+                    className="d-none d-md-block"
+                    variant="outline-success"
+                  >
+                    Login
+                  </Button>
+                  <Nav.Link
+                    className="d-block d-md-none text-success"
+                    onClick={() => signIn()}
+                  >
+                    Login
+                  </Nav.Link>
+                </>
+              )}
+            </Nav.Item>
+          </Nav>
+        </Navbar.Collapse>
       </Container>
-    </AppBar>
+    </Navbar>
   );
 }
