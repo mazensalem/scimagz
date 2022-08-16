@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 import { Alert, Spinner } from "react-bootstrap";
 import { useState } from "react";
 
-export default function revart({ id, sector }) {
+export default function Revart({ id, sector }) {
   const [massage, setmassage] = useState("");
   const [msector, setmsecor] = useState("");
   const [loading, setloading] = useState(false);
