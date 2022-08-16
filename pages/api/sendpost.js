@@ -7,6 +7,7 @@ cloudinary.config({ long_url_signature: process.env.CLOUDINARY_URL });
 
 export default async (req, res) => {
   const session = await getSession({ req });
+  console.log("here");
   if (session) {
     const cl = await client;
     const db = await cl.db();
@@ -57,7 +58,7 @@ export default async (req, res) => {
           status: "draft",
           user_email: session.user.email,
         });
-        res.json({ content: r.insertedId.toString() });
+        res.status(200).json({ content: r.insertedId.toString() });
       } else {
         const post = await postcol.findOne({
           _id: ObjectId(JSON.parse(req.body).postid),
