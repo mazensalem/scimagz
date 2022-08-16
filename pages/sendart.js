@@ -45,7 +45,7 @@ export default function Sendart({ rpostid, rtext, rfile, rpostname, rstatus }) {
           }}
           dismissible
         >
-          massage
+          {massage}
         </Alert>
       )}
       <Form>
@@ -72,6 +72,7 @@ export default function Sendart({ rpostid, rtext, rfile, rpostname, rstatus }) {
         <Button
           onClick={async () => {
             const post = await sendart(postid, text, postname, "text");
+            console.log(post, postid);
             if (postid == null) {
               setpostid(post);
             }
