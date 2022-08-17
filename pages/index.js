@@ -11,7 +11,11 @@ export default function Home({ posts, rmassage }) {
         {massage && (
           <Alert
             variant={
-              massage == "Approved" || massage == "Done" ? "success" : "danger"
+              massage == "Approved" ||
+              massage == "Done" ||
+              massage == "ApprovedPost"
+                ? "success"
+                : "danger"
             }
             className="mx-2 w-md-1 ms-md-5"
             onClose={() => {
@@ -21,8 +25,12 @@ export default function Home({ posts, rmassage }) {
           >
             {massage == "Approved"
               ? "You have approved a user"
+              : massage == "ApprovedPost"
+              ? "You have approved a post"
               : massage == "Denied"
               ? "You have denied a user"
+              : massage == "DeniedPost"
+              ? "You have denied a post"
               : massage == "nouser"
               ? "You can't review that user"
               : massage == "nopost"

@@ -84,7 +84,8 @@ export async function getServerSideProps(context) {
       post.approvedby == session.user.email
     ) {
       post._id = post._id.toString();
-      return { props: { post, isrevewing: true } };
+      const user = await ucol.findOne({ email: post.user_email });
+      return { props: { post, isrevewing: true, userid: user._id.toString() } };
     } else {
       return {
         redirect: {

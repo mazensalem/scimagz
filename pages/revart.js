@@ -49,7 +49,7 @@ export default function Revart({ id, sector }) {
           onClick={() => {
             setloading(true);
             sendrev(id, sector, "denied");
-            Route.push("/?massage=Denied");
+            Route.push(`/?massage=Denied${sector == "post" && "Post"}`);
           }}
           disabled={loading}
         >
@@ -73,7 +73,7 @@ export default function Revart({ id, sector }) {
           onClick={() => {
             setloading(true);
             sendrev(id, sector, "Approved");
-            Route.push("/?massage=Approved");
+            Route.push(`/?massage=Approved${sector == "post" && "Post"}`);
           }}
           variant="outline-success mx-1"
           disabled={loading}

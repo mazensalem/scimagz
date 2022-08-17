@@ -7,7 +7,6 @@ cloudinary.config({ long_url_signature: process.env.CLOUDINARY_URL });
 
 export default async (req, res) => {
   const session = await getSession({ req });
-  console.log("here");
   if (session) {
     const cl = await client;
     const db = await cl.db();

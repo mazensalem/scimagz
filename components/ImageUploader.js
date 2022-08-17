@@ -31,7 +31,8 @@ export function ImageUpload({ setContent, content, postid }) {
               postid,
             }),
           }).then((x) => x.json());
-          if (r.content == "Done") {
+          console.log(r);
+          if (r.content) {
             alert("Success");
           }
         } else if (error) {

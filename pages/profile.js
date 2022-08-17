@@ -229,14 +229,27 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
 
             {/* Your Posts */}
             <Card className="ProfileCard mt-5 mx-auto text-start">
-              <Card.Header>Your Posts</Card.Header>
+              <Card.Header className="d-flex justify-content-between align-items-center">
+                Your Posts
+                <Button
+                  variant="outline-dark"
+                  as="a"
+                  href="/sendart"
+                  className="float-end"
+                >
+                  Add Post
+                </Button>
+              </Card.Header>
               <ListGroup variant="flush">
                 {posts.map((post) => (
                   <ListGroup.Item
                     key={post._id}
                     className="d-flex justify-content-between"
                   >
-                    <a href={"/sendart?id=" + post._id}>{post.name}</a>
+                    <div>
+                      <a href={"/sendart?id=" + post._id}>{post.name}</a>(
+                      {post.status})
+                    </div>
                     <Button
                       variant="danger"
                       onClick={() =>
