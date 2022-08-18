@@ -97,6 +97,7 @@ export default function Sendart({ rcoursid, rtext, rcoursename }) {
 
 export async function getServerSideProps(context) {
   const { req } = context;
+  const session = await getSession({ req });
   const cl = await client;
   const db = await cl.db();
   const ucol = await db.collection("users");
@@ -104,7 +105,6 @@ export async function getServerSideProps(context) {
   if (context.query.id) {
     const postcol = await db.collection("courses");
     const r = await postcol.findOne({ _id: ObjectId(context.query.id) });
-    const session = await getSession({ req });
     if (user.role != "Student") {
       if (r.user_email === session.user.email) {
         return {
@@ -131,8 +131,7 @@ export async function getServerSideProps(context) {
       };
     }
   } else {
-    if (user.role != "Student"){
-
+    if (user.role != "Student") {
       return {
         props: {
           rpostid: null,
