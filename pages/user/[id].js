@@ -67,26 +67,32 @@ export default function User({ user, posts, courses }) {
                   key={post._id}
                   className="d-flex justify-content-between"
                 >
-                  <a href={"/sendart?id=" + post._id}>{post.name}</a>
+                  <a href={"/sendart?id=" + post._id}>
+                    {post.name || "untitled"}
+                  </a>
                 </ListGroup.Item>
               ))}
             </ListGroup>
           </Card>
 
           {/* Your Courses */}
-          <Card className="ProfileCard mt-5 mx-auto text-start">
-            <Card.Header>Your Courses</Card.Header>
-            <ListGroup variant="flush">
-              {courses.map((course) => (
-                <ListGroup.Item
-                  key={course._id}
-                  className="d-flex justify-content-between"
-                >
-                  <a href={"/sendcours?id=" + course._id}>{course.name}</a>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-          </Card>
+          {user.role != "Student" && (
+            <Card className="ProfileCard mt-5 mx-auto text-start">
+              <Card.Header>Your Courses</Card.Header>
+              <ListGroup variant="flush">
+                {courses.map((course) => (
+                  <ListGroup.Item
+                    key={course._id}
+                    className="d-flex justify-content-between"
+                  >
+                    <a href={"/sendcours?id=" + course._id}>
+                      {course.name || "untitled"}
+                    </a>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Card>
+          )}
         </div>
       </div>
     </>
@@ -104,7 +110,7 @@ export async function getServerSideProps(context) {
   if (!user) {
     return {
       redirect: {
-        destination: "/",
+        destination: "/?massage=noufound",
         permanent: false,
       },
     };

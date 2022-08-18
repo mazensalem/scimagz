@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import client from "../lib/mongodbconn";
 import NextRouter from "next/router";
-import Textreader from "../components/Textreader";
 import {
   Dropdown,
   ToastContainer,
@@ -12,6 +11,7 @@ import {
   Button,
   Alert,
   ListGroup,
+  Spinner,
 } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 
@@ -50,6 +50,8 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
   const [editbiostate, seteditbiostate] = useState(user.bio ? false : true);
   const [userrole, setuserrole] = useState("");
   const [massages, setmassages] = useState("");
+  const [roleloading, setroleloading] = useState(false);
+  const [bioloading, setbioloading] = useState(false);
 
   const { status } = useSession({
     required: true,
@@ -90,22 +92,32 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
                 </strong>
               </Toast.Header>
               <Toast.Body className="text-start">
-                <Button
-                  onClick={async () => {
-                    const result = await send(userrole, "role");
-                    if (result == "Done") {
-                      user.role = userrole;
-                      user.status = "Pending Confirmation";
-                      setmassages("You have successfully confirmed your role");
-                    } else {
-                      setmassages("Something went wrong");
-                    }
-                    setuserrole("");
-                  }}
-                  className="me-1"
-                >
-                  Confirm
-                </Button>
+                {roleloading ? (
+                  <Spinner variant="dark" animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                ) : (
+                  <Button
+                    onClick={async () => {
+                      setroleloading(true);
+                      const result = await send(userrole, "role");
+                      if (result == "Done") {
+                        user.role = userrole;
+                        user.status = "Pending Confirmation";
+                        setmassages(
+                          "You have successfully confirmed your role"
+                        );
+                      } else {
+                        setmassages("Something went wrong");
+                      }
+                      setuserrole("");
+                      setroleloading(false);
+                    }}
+                    className="me-1"
+                  >
+                    Confirm
+                  </Button>
+                )}
                 <Button onClick={() => setuserrole("")}>Dismiss</Button>
               </Toast.Body>
             </Toast>
@@ -207,21 +219,31 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
                       container="bioeditor"
                     />
                     <div id="bioeditor"></div>
-                    <Button
-                      variant="outline-light"
-                      onClick={async () => {
-                        const result = await send(content, "bio");
-                        if (result == "Done") {
-                          user.bio = content;
-                          seteditbiostate(false);
-                          setmassages("you have successfully changed your bio");
-                        } else {
-                          setmassages("Something went wrong");
-                        }
-                      }}
-                    >
-                      save my bio
-                    </Button>
+                    {bioloading ? (
+                      <Spinner variant="light" animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
+                    ) : (
+                      <Button
+                        variant="outline-light"
+                        onClick={async () => {
+                          setbioloading(true);
+                          const result = await send(content, "bio");
+                          if (result == "Done") {
+                            user.bio = content;
+                            seteditbiostate(false);
+                            setmassages(
+                              "you have successfully changed your bio"
+                            );
+                          } else {
+                            setmassages("Something went wrong");
+                          }
+                          setbioloading(false);
+                        }}
+                      >
+                        save my bio
+                      </Button>
+                    )}
                   </div>
                 </Card.Text>
               </Card.Body>
@@ -391,20 +413,12 @@ export async function getServerSideProps(context) {
     for (let i = 0; i < courses.length; i++) {
       courses[i]._id = courses[i]._id.toString();
     }
+  } else {
+    return {
+      props: {},
+    };
   }
   return {
     props: { user: user || {}, posts, penddingapproval, courses },
   };
 }
-
-// {
-//   "blocks":
-//      [
-//       {"id":"FQK06YSu-j","type":"paragraph","data":{"text":"Hello my name is"}},
-//       {"id":"KKtIL_gGEN","type":"header","data":{"text":"Mazen Salem","level":1}},
-//       {"id":"MtqHNuX3fC","type":"paragraph","data":{"text":"and I am the <b>Developer </b>for this site"}},
-//       {"id":"U2kcOW9Fjg","type":"paragraph","data":{"text":"and the<b> co-founder</b> <i>here</i>"}},
-//       {"id":"7Gnn4h4C8n","type":"paragraph","data":{"text":"this is from my local machine"}},
-//       {"id":"vLRXDaVWUx","type":"paragraph","data":{"text":"Hello Again"}}
-//     ]
-// }

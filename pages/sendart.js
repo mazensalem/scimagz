@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ImageUpload } from "../components/ImageUploader";
 import dynamic from "next/dynamic";
 import client from "../lib/mongodbconn";
 import { ObjectId } from "mongodb";
 import { getSession } from "next-auth/react";
 import Router from "next/router";
-import { Button, Form, Alert } from "react-bootstrap";
+import { Button, Form, Alert, Spinner } from "react-bootstrap";
 
 const CustomEditor = dynamic(() => import("../components/richtext"), {
   ssr: false,
@@ -34,6 +34,18 @@ export default function Sendart({ rpostid, rtext, rfile, rpostname, rstatus }) {
   const [postid, setpostid] = useState(rpostid);
   const [status, setstatus] = useState(rstatus);
   const [massage, setmassage] = useState("");
+  const [textloading, settextloading] = useState(false);
+  const [submitloading, setsubmitloading] = useState(false);
+
+  useEffect(() => {
+    if (textloading == false) {
+      window.scrollTo({
+        behavior: "smooth",
+        top: 0,
+      });
+    }
+  }, [textloading]);
+
   return (
     <div>
       {massage && (
@@ -69,39 +81,53 @@ export default function Sendart({ rpostid, rtext, rfile, rpostname, rstatus }) {
           />
           <div className="border border-1 me-2" id="postbody"></div>
         </Form.Group>
-        <Button
-          onClick={async () => {
-            const post = await sendart(postid, text, postname, "text");
-            console.log(post, postid);
-            if (postid == null) {
-              setpostid(post);
-            }
-            setmassage("Done");
-          }}
-          className="ms-2"
-          variant="outline-success"
-        >
-          Send text
-        </Button>
+        {textloading ? (
+          <Spinner variant="success" animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        ) : (
+          <Button
+            onClick={async () => {
+              settextloading(true);
+              const post = await sendart(postid, text, postname, "text");
+              if (postid == null) {
+                setpostid(post);
+              }
+              setmassage("Done");
+              settextloading(false);
+            }}
+            className="ms-2"
+            variant="outline-success"
+          >
+            Send text
+          </Button>
+        )}
         <ImageUpload
           postid={postid}
           setpostid={setpostid}
           setContent={setfile}
           content={file}
         />
-        <Button
-          onClick={async () => {
-            await sendart(postid, "", "", "submit");
-            setstatus(status == "draft" ? "Pending confirmation" : "draft");
-            Router.push("/?massage=Done");
-          }}
-          className="ms-2 mt-3"
-          variant="outline-success"
-        >
-          {status == "draft" || status == null
-            ? "send for review"
-            : "make it draft"}
-        </Button>
+        {submitloading ? (
+          <Spinner variant="success" animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        ) : (
+          <Button
+            onClick={async () => {
+              setsubmitloading(true);
+              await sendart(postid, "", "", "submit");
+              setstatus(status == "draft" ? "Pending confirmation" : "draft");
+              Router.push("/?massage=Done");
+            }}
+            className="ms-2 mt-3"
+            variant="outline-success"
+          >
+            {status == "draft" || status == null
+              ? "send for review"
+              : "make it draft"}
+          </Button>
+        )}
       </Form>
     </div>
   );
@@ -119,16 +145,16 @@ export async function getServerSideProps(context) {
       return {
         props: {
           rpostid: context.query.id,
-          rtext: r.text,
+          rtext: r.text || null,
           rfile: r.file || null,
-          rpostname: r.name,
+          rpostname: r.name || null,
           rstatus: r.status,
         },
       };
     } else {
       return {
         redirect: {
-          destination: "/",
+          destination: "/?massage=youaren'tallowed",
           permanent: false,
         },
       };

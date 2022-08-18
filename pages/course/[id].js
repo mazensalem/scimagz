@@ -53,7 +53,7 @@ export async function getServerSideProps(context) {
   } else {
     return {
       redirect: {
-        destination: "/",
+        destination: "/?massage=nopfound",
         permanent: false,
       },
     };

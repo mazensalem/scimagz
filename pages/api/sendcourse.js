@@ -27,7 +27,7 @@ export default async (req, res) => {
           name: JSON.parse(req.body).name,
         }
       );
+      res.status(200).json({ content: "Done" });
     }
-    res.status(200).json({ content: "Done" });
   }
 };

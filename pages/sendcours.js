@@ -4,14 +4,13 @@ import client from "../lib/mongodbconn";
 import { ObjectId } from "mongodb";
 import { getSession } from "next-auth/react";
 import Router from "next/router";
-import { Alert, Button, Form } from "react-bootstrap";
+import { Alert, Button, Form, Spinner } from "react-bootstrap";
 
 const CustomEditor = dynamic(() => import("../components/richtext"), {
   ssr: false,
 });
 
 async function sendcourse(courseid, text, name) {
-  console.log({ courseid, text, name });
   const r = await fetch("/api/sendcourse", {
     method: "POST",
     body: JSON.stringify({ courseid, text, name }),
@@ -24,6 +23,7 @@ export default function Sendart({ rcoursid, rtext, rcoursename }) {
   const [coursname, setcoursname] = useState(rcoursename);
   const [coursid, setcoursid] = useState(rcoursid);
   const [massage, setmassage] = useState("");
+  const [loading, setloading] = useState(false);
   return (
     <div>
       {massage && (
@@ -59,38 +59,33 @@ export default function Sendart({ rcoursid, rtext, rcoursename }) {
           />
           <div className="border border-1 me-2" id="postbody"></div>
         </Form.Group>
-        <Button
-          onClick={async () => {
-            const post = await sendcourse(setcoursid, text, coursname, "text");
-            if (coursid == null) {
-              setcoursid(post);
-            }
-            setmassage("Done");
-            Router.push("/?massage=Done");
-          }}
-          className="ms-2"
-          variant="outline-success"
-        >
-          Send text
-        </Button>
+        {loading ? (
+          <Spinner variant="success" animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        ) : (
+          <Button
+            onClick={async () => {
+              setloading(true);
+              const post = await sendcourse(
+                setcoursid,
+                text,
+                coursname,
+                "text"
+              );
+              if (coursid == null) {
+                setcoursid(post);
+              }
+              setmassage("Done");
+              Router.push("/?massage=Done");
+            }}
+            className="ms-2"
+            variant="outline-success"
+          >
+            Send
+          </Button>
+        )}
       </Form>
-      {/* <input
-        type="text"
-        value={coursname}
-        onChange={(e) => setcoursname(e.target.value)}
-      />
-      <CustomEditor setContent={settext} content={text} />
-      <button
-        onClick={async () => {
-          const course = await sendcourse(coursid, text, coursname);
-          if (coursid == null) {
-            setcoursid(course);
-          }
-          Router.push("/");
-        }}
-      >
-        sendtext
-      </button> */}
     </div>
   );
 }
@@ -117,7 +112,7 @@ export async function getServerSideProps(context) {
       } else {
         return {
           redirect: {
-            destination: "/",
+            destination: "/?massage=youaren'tallowed",
             permanent: false,
           },
         };
@@ -125,7 +120,7 @@ export async function getServerSideProps(context) {
     } else {
       return {
         redirect: {
-          destination: "/",
+          destination: "/?massage=youaren'tallowed",
           permanent: false,
         },
       };
@@ -137,6 +132,13 @@ export async function getServerSideProps(context) {
           rpostid: null,
           rtext: '{"blocks": []}',
           rpostname: "",
+        },
+      };
+    } else {
+      return {
+        redirect: {
+          destination: "/?massage=youaren'tallowed",
+          permanent: false,
         },
       };
     }
