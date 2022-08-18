@@ -96,16 +96,16 @@ export default function Sendart({ rcoursid, rtext, rcoursename }) {
 }
 
 export async function getServerSideProps(context) {
+  const { req } = context;
+  const cl = await client;
+  const db = await cl.db();
+  const ucol = await db.collection("users");
+  const user = await ucol.findOne({ email: session.user.email });
   if (context.query.id) {
-    const { req } = context;
-    const cl = await client;
-    const db = await cl.db();
     const postcol = await db.collection("courses");
-    const ucol = await db.collection("users");
     const r = await postcol.findOne({ _id: ObjectId(context.query.id) });
     const session = await getSession({ req });
-    const user = await ucol.findOne({ email: session.user.email });
-    if (user.role == "Instructor") {
+    if (user.role != "Student") {
       if (r.user_email === session.user.email) {
         return {
           props: {
@@ -131,12 +131,15 @@ export async function getServerSideProps(context) {
       };
     }
   } else {
-    return {
-      props: {
-        rpostid: null,
-        rtext: '{"blocks": []}',
-        rpostname: "",
-      },
-    };
+    if (user.role != "Student"){
+
+      return {
+        props: {
+          rpostid: null,
+          rtext: '{"blocks": []}',
+          rpostname: "",
+        },
+      };
+    }
   }
 }

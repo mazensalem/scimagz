@@ -1,7 +1,7 @@
 import { generateSignature } from "../utils/generateSignature";
 import { Button } from "react-bootstrap";
 
-export function ImageUpload({ setContent, content, postid }) {
+export function ImageUpload({ setContent, content, postid, setpostid }) {
   async function handleWidgetClick() {
     const widget = window.cloudinary.createUploadWidget(
       {
@@ -31,12 +31,13 @@ export function ImageUpload({ setContent, content, postid }) {
               postid,
             }),
           }).then((x) => x.json());
-          console.log(r);
           if (r.content) {
+            if (postid == null) {
+              setpostid(r.content);
+            }
             alert("Success");
           }
         } else if (error) {
-          console.log(error);
           alert("Error");
         }
       }

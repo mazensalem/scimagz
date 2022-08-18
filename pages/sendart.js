@@ -83,7 +83,12 @@ export default function Sendart({ rpostid, rtext, rfile, rpostname, rstatus }) {
         >
           Send text
         </Button>
-        <ImageUpload postid={postid} setContent={setfile} content={file} />
+        <ImageUpload
+          postid={postid}
+          setpostid={setpostid}
+          setContent={setfile}
+          content={file}
+        />
         <Button
           onClick={async () => {
             await sendart(postid, "", "", "submit");

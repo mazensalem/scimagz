@@ -247,8 +247,10 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
                     className="d-flex justify-content-between"
                   >
                     <div>
-                      <a href={"/sendart?id=" + post._id}>{post.name}</a>(
-                      {post.status})
+                      <a href={"/sendart?id=" + post._id}>
+                        {post.name || "untitled"}
+                      </a>
+                      ({post.status})
                     </div>
                     <Button
                       variant="danger"
@@ -266,65 +268,83 @@ export default function Profile({ user, posts, penddingapproval, courses }) {
             </Card>
 
             {/* Your Courses */}
-            <Card className="ProfileCard mt-5 mx-auto text-start">
-              <Card.Header>Your Courses</Card.Header>
-              <ListGroup variant="flush">
-                {courses.map((course) => (
-                  <ListGroup.Item
-                    key={course._id}
-                    className="d-flex justify-content-between"
+            {user.role != "Student" && (
+              <Card className="ProfileCard mt-5 mx-auto text-start">
+                <Card.Header className="d-flex justify-content-between align-items-center">
+                  Your Courses
+                  <Button
+                    variant="outline-dark"
+                    as="a"
+                    href="/sendcours"
+                    className="float-end"
                   >
-                    <a href={"/sendcours?id=" + course._id}>{course.name}</a>
-                    <Button
-                      variant="danger"
-                      onClick={() =>
-                        deleteCourse(course._id)
-                          ? NextRouter.push("/?massage=coursedeleted")
-                          : setmassages("Something went wrong")
-                      }
+                    Add Course
+                  </Button>
+                </Card.Header>
+                <ListGroup variant="flush">
+                  {courses.map((course) => (
+                    <ListGroup.Item
+                      key={course._id}
+                      className="d-flex justify-content-between"
                     >
-                      delete
-                    </Button>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </Card>
+                      <a href={"/sendcours?id=" + course._id}>
+                        {course.name || "untitled"}
+                      </a>
+                      <Button
+                        variant="danger"
+                        onClick={() =>
+                          deleteCourse(course._id)
+                            ? NextRouter.push("/?massage=coursedeleted")
+                            : setmassages("Something went wrong")
+                        }
+                      >
+                        delete
+                      </Button>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              </Card>
+            )}
 
-            {/* Users to review */}
-            <Card className="ProfileCard mt-5 mx-auto text-start">
-              <Card.Header>Users to review</Card.Header>
-              <ListGroup variant="flush">
-                {penddingapproval.users.map((user) => (
-                  <ListGroup.Item
-                    key={user._id}
-                    className="d-flex justify-content-between"
-                  >
-                    <a href={"/revart?sector=user&id=" + user._id}>
-                      {user.name}
-                    </a>
-                    <p>{user.status}</p>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </Card>
+            {user.role == "Instructor" && (
+              <>
+                {/* Users to review */}
+                <Card className="ProfileCard mt-5 mx-auto text-start">
+                  <Card.Header>Users to review</Card.Header>
+                  <ListGroup variant="flush">
+                    {penddingapproval.users.map((user) => (
+                      <ListGroup.Item
+                        key={user._id}
+                        className="d-flex justify-content-between"
+                      >
+                        <a href={"/revart?sector=user&id=" + user._id}>
+                          {user.name}
+                        </a>
+                        <p>{user.status}</p>
+                      </ListGroup.Item>
+                    ))}
+                  </ListGroup>
+                </Card>
 
-            {/* Posts to review */}
-            <Card className="ProfileCard mt-5 mx-auto text-start">
-              <Card.Header>Posts to review</Card.Header>
-              <ListGroup variant="flush">
-                {penddingapproval.posts.map((post) => (
-                  <ListGroup.Item
-                    key={post._id}
-                    className="d-flex justify-content-between"
-                  >
-                    <a href={"/revart?sector=post&id=" + post._id}>
-                      {post.name}
-                    </a>
-                    <p>{post.status}</p>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </Card>
+                {/* Posts to review */}
+                <Card className="ProfileCard mt-5 mx-auto text-start">
+                  <Card.Header>Posts to review</Card.Header>
+                  <ListGroup variant="flush">
+                    {penddingapproval.posts.map((post) => (
+                      <ListGroup.Item
+                        key={post._id}
+                        className="d-flex justify-content-between"
+                      >
+                        <a href={"/revart?sector=post&id=" + post._id}>
+                          {post.name || "untitled"}
+                        </a>
+                        <p>{post.status}</p>
+                      </ListGroup.Item>
+                    ))}
+                  </ListGroup>
+                </Card>
+              </>
+            )}
           </div>
         </div>
       </div>
