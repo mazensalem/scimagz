@@ -5,6 +5,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   height: 100vh;
+  overflow-x: hidden;
 }
 
 #__next {
@@ -33,8 +34,14 @@ body {
 .ProfileCard {
   width: 80%;
 }
-.ce-popover {
+.ce-popover,
+.ce-conversion-toolbar,
+.ce-inline-toolbar__dropdown {
   color: black;
+}
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn {
+  background-color: white;
 }
 @media screen and (min-width: 768px) {
   .footerbody {

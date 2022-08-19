@@ -38,7 +38,7 @@ export default function User({ user, posts, courses }) {
           </div>
         </div>
 
-        <div className="d-md-flex flex-md-wrap ms-2">
+        <div className="d-md-flex w-100 flex-md-wrap ms-2">
           {/* Bio */}
           <Card bg="dark" text="white" className="ProfileCard mt-5 mx-auto">
             <Card.Header className="d-flex justify-content-between align-items-center">
