@@ -85,7 +85,7 @@ export default function User({ user, posts, courses }) {
                     key={course._id}
                     className="d-flex justify-content-between"
                   >
-                    <a href={"/sendcours?id=" + course._id}>
+                    <a href={"/course/" + course._id}>
                       {course.name || "untitled"}
                     </a>
                   </ListGroup.Item>
