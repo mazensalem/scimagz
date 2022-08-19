@@ -120,10 +120,10 @@ export async function getServerSideProps(context) {
   const rc = await ccol.find({ user_email: user.email });
   const courses = await rc.toArray();
   for (let i = 0; i < posts.length; i++) {
-    posts[i]._id = null;
+    posts[i]._id = posts[i]._id.toString();
   }
   for (let i = 0; i < courses.length; i++) {
-    courses[i]._id = null;
+    courses[i]._id = courses[i]._id.toString();
   }
   user._id = null;
   return { props: { user, posts, courses } };
