@@ -67,12 +67,7 @@ export default function Sendart({ rcoursid, rtext, rcoursename }) {
           <Button
             onClick={async () => {
               setloading(true);
-              const post = await sendcourse(
-                setcoursid,
-                text,
-                coursname,
-                "text"
-              );
+              const post = await sendcourse(coursid, text, coursname, "text");
               if (coursid == null) {
                 setcoursid(post);
               }
