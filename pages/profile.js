@@ -415,7 +415,11 @@ export async function getServerSideProps(context) {
     }
   } else {
     return {
-      props: {},
+      props: {
+        user: {
+          bio: "",
+        },
+      },
     };
   }
   return {
