@@ -39,19 +39,21 @@ export default function Footer() {
         <Card.Body>
           <Card.Title>SCIMAGZ</Card.Title>
           <Card.Text className="footerbody">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cupiditate
-            voluptate ut unde. Officia voluptatem ducimus corrupti quidem
-            exercitationem aliquam accusantium porro iste, quas quia non
-            expedita, tempore impedit commodi neque.
+            today we would like to announce the mentoring platform for young
+            people, which helps spread research and projects. Where we will
+            share our discoveries of different inventions In addition to
+            encouraging young researchers to delve into topics from various
+            fields of science while providing scientific content to readers by
+            writing advanced articles on different sciences
           </Card.Text>
           <ListGroup className="footercontactlist">
-            <ListGroup.Item as="a" href="tel:+0201234567890">
+            <ListGroup.Item as="a" href="tel:+201033332946">
               <FontAwesomeIcon className="mx-1" icon={faPhone} />
-              +0201234567890
+              +201033332946
             </ListGroup.Item>
-            <ListGroup.Item as="a" href="mailto:email@gmail.com">
+            <ListGroup.Item as="a" href="mailto:scimagz1@gmail.com">
               <FontAwesomeIcon className="mx-1" icon={faMailBulk} />
-              email@gmail.com
+              scimagz1@gmail.com
             </ListGroup.Item>
           </ListGroup>
         </Card.Body>

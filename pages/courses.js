@@ -4,12 +4,14 @@ import Post from "../components/Post";
 export default function Home({ courses }) {
   return (
     <div>
-      {courses ? (
+      {courses.length ? (
         courses.map((course) => (
           <Post key={course.id} post={course} sector="courses" />
         ))
       ) : (
-        <>no courses is here yet</>
+        <div className="mx-auto" style={{ width: "max-content" }}>
+          no courses is here yet
+        </div>
       )}
     </div>
   );
