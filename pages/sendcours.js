@@ -15,6 +15,7 @@ async function sendcourse(courseid, text, name) {
     method: "POST",
     body: JSON.stringify({ courseid, text, name }),
   }).then((x) => x.json());
+  console.log("h");
   return r.content;
 }
 

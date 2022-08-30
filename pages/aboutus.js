@@ -70,6 +70,24 @@ export default function aboutus() {
               width={80}
               height={80}
               style={{ objectFit: "cover" }}
+              src="/omar.jfif"
+            />
+            <Card.Title>OMAR DOHIM</Card.Title>
+            <div className="d-flex justify-content-center justify-content-md-center">
+              <Badge pill bg="secondary" className="me-1">
+                CO-FOUNDER
+              </Badge>
+              <Badge pill bg="secondary" className="me-1">
+                VICE HEAD OF GRAPHIC DESIGNING
+              </Badge>
+            </div>
+          </Card>
+          <Card className="cardwidth mx-auto bg-dark text-center text-white m-2 p-2 ms-md-5 pt-5 mt-5">
+            <img
+              className="rounded-circle mx-auto position-absolute top-0 start-50 translate-middle"
+              width={80}
+              height={80}
+              style={{ objectFit: "cover" }}
               src="/basmala.jpeg"
             />
             <Card.Title>BASMALA ELMAGHRABY</Card.Title>
@@ -136,21 +154,6 @@ export default function aboutus() {
             <div className="d-flex justify-content-center justify-content-md-center">
               <Badge pill bg="secondary" className="me-1">
                 HEAD OF GRAPHIC DESIGNING
-              </Badge>
-            </div>
-          </Card>
-          <Card className="cardwidth mx-auto bg-dark text-center text-white m-2 p-2 ms-md-5 pt-5 mt-5">
-            <img
-              className="rounded-circle mx-auto position-absolute top-0 start-50 translate-middle"
-              width={80}
-              height={80}
-              style={{ objectFit: "cover" }}
-              src="/omar.jfif"
-            />
-            <Card.Title>OMAR DOHIM</Card.Title>
-            <div className="d-flex justify-content-center justify-content-md-center">
-              <Badge pill bg="secondary" className="me-1">
-                VICE HEAD OF GRAPHIC DESIGNING
               </Badge>
             </div>
           </Card>

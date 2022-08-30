@@ -25,9 +25,6 @@ body {
 .iframestyle {
   max-width: 400px;
 }
-.Titlewidth {
-  max-width: 100px;
-}
 .w-80 {
   width: 80%;
 }
@@ -71,6 +68,9 @@ body {
   }
   .ProfileCard {
     width: 40%;
+  }
+  .Titlewidth {
+    width: max-content !important;
   }
 }
 * {
