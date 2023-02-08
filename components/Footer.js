@@ -55,6 +55,10 @@ export default function Footer() {
               <FontAwesomeIcon className="mx-1" icon={faMailBulk} />
               scimagz1@gmail.com
             </ListGroup.Item>
+            <Card.Img
+              src="/E_WEB_04.png"
+              style={{ width: "100px", height: "100px" }}
+            />
           </ListGroup>
         </Card.Body>
       </Card>
